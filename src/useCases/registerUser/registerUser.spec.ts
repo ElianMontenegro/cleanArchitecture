@@ -1,11 +1,18 @@
 
 class registerUser {
     handle(httpRequest: any) {
-        if(!httpRequest.body.email || !httpRequest.body.username || !httpRequest.body.password){
-            return {
-                statusCode: 400
+        const requiredProperties = ["username", "email", "password"];
+        for (let props of requiredProperties) {
+            if(!httpRequest.body[props]){
+                return {
+                    statusCode: 400
+                }
             }
         }
+        
+            
+       
+            
        
     }
 }
