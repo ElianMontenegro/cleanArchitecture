@@ -1,0 +1,25 @@
+{
+  "name": "cleanArchitecture",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ElianMontenegro/cleanArchitecture.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ElianMontenegro/cleanArchitecture/issues"
+  },
+  "homepage": "https://github.com/ElianMontenegro/cleanArchitecture#readme",
+  "devDependencies": {
+    "git-commit-msg-linter": "^3.2.8",
+    "typescript": "^4.4.2"
+  },
+  "dependencies": {}
+}
