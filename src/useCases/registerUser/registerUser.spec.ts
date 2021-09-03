@@ -1,19 +1,16 @@
-
+import { IHttpRequest , IHttpResponse } from '../../interfaces/IHttp';
+ 
 class registerUser {
-    handle(httpRequest: any) {
+    handle(httpRequest: IHttpRequest) {
         const requiredProperties = ["username", "email", "password"];
         for (let props of requiredProperties) {
             if(!httpRequest.body[props]){
                 return {
-                    statusCode: 400
+                    statusCode: 400,
+                    body: new Error("bad request")
                 }
             }
         }
-        
-            
-       
-            
-       
     }
 }
 
@@ -27,7 +24,7 @@ describe('Register user', () => {
                 password: 'any_password'
             }
         }
-        const httpResponse : any = sut.handle(httpRequest)
+        const httpResponse : IHttpResponse = sut.handle(httpRequest)!
         expect(httpResponse.statusCode).toBe(400)
     }),
 
@@ -39,19 +36,7 @@ describe('Register user', () => {
                 password: 'any_password'
             }
         }
-        const httpResponse : any = sut.handle(httpRequest)
-        expect(httpResponse.statusCode).toBe(400)
-    })
-
-    test('should return 400 if password is not provided', () => {
-        const sut = new registerUser()
-        const httpRequest = {
-            body: {
-                username: 'any_username',
-                email: 'any_email'
-            }
-        }
-        const httpResponse : any = sut.handle(httpRequest)
+        const httpResponse : IHttpResponse = sut.handle(httpRequest)!
         expect(httpResponse.statusCode).toBe(400)
     })
     
