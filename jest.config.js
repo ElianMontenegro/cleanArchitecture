@@ -1,8 +1,12 @@
 module.exports = {
+    coverageDirectory:"coverage",
     testEnvironment: "node",
-    moduleFileExtensions: ['js', 'ts'],
-    modulePathIgnorePatterns: ['<rootDir>/src/interfaces'],
+    transform: {
+        '^.+\\.tsx?$': 'ts-jest'
+    },
     roots: [
         "<rootDir>/src"
     ],
+    collectCoverageFrom: ['<rootDir>/src/***/*.ts'],
+    moduleFileExtensions: ['js', 'ts'],
 }
