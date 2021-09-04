@@ -1,26 +1,13 @@
-import { IHttpRequest , IHttpResponse } from '../../interfaces/IHttp';
+import { IHttpResponse } from '../../interfaces/IHttp';
 import { MissingParamater } from '../../errors/clientError'
+import { RegisterUser } from './registerUserController'
 
-
-class registerUser {
-    handle(httpRequest: IHttpRequest) {
-        const requiredProperties = ["username", "email", "password"];
-        for (let props of requiredProperties) {
-            if(!httpRequest.body[props]){
-                return {
-                    statusCode: 400,
-                    body: new MissingParamater(props)
-                }
-            }
-        }
-    }
-}
 
 
 
 describe('Register user', () => {
     test('should return 400 if email is not provided', () => {
-        const sut = new registerUser()
+        const sut = new RegisterUser()
         const httpRequest = {
             body: {
                 username: 'any_username',
@@ -33,7 +20,7 @@ describe('Register user', () => {
     }),
 
     test('should return 400 if username is not provided', () => {
-        const sut = new registerUser()
+        const sut = new RegisterUser()
         const httpRequest = {
             body: {
                 email: 'any_email',
@@ -46,7 +33,7 @@ describe('Register user', () => {
     })
 
     test('should return 400 if password is not provided', () => {
-        const sut = new registerUser()
+        const sut = new RegisterUser()
         const httpRequest = {
             body: {
                 username: 'any_username',
