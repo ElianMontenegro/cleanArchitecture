@@ -2,12 +2,14 @@ import { IHttpResponse } from '../../interfaces/IHttp';
 import { MissingParamater } from '../../errors/clientError'
 import { RegisterUser } from './registerUserController'
 
-
+const makeSut = () => {
+    return new RegisterUser();
+}
 
 
 describe('Register user', () => {
     test('should return 400 if email is not provided', () => {
-        const sut = new RegisterUser()
+        const sut = makeSut()
         const httpRequest = {
             body: {
                 username: 'any_username',
@@ -20,7 +22,7 @@ describe('Register user', () => {
     }),
 
     test('should return 400 if username is not provided', () => {
-        const sut = new RegisterUser()
+        const sut = makeSut()
         const httpRequest = {
             body: {
                 email: 'any_email',
@@ -33,7 +35,7 @@ describe('Register user', () => {
     })
 
     test('should return 400 if password is not provided', () => {
-        const sut = new RegisterUser()
+        const sut = makeSut()
         const httpRequest = {
             body: {
                 username: 'any_username',
