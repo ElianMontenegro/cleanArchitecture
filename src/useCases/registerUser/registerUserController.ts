@@ -1,10 +1,13 @@
 import { IHttpRequest , IHttpResponse } from '../../interfaces/IHttp';
 import { MissingParamater } from '../../errors/clientError'
+import { IRegisterUseCase } from '../../interfaces/IRegisterUseCase'
 
-
-export class RegisterUser {
+export class RegisterUserController {
+    constructor(private readonly registerUseCase : IRegisterUseCase){
+    }
     handle(httpRequest: IHttpRequest) {
-        const requiredProperties = ["username", "email", "password"];
+        const { username, email, password, repeatPassword } = httpRequest.body
+        const requiredProperties = ["username", "email", "password", "repeatPassword"];
         for (let props of requiredProperties) {
             if(!httpRequest.body[props]){
                 return {
@@ -13,5 +16,6 @@ export class RegisterUser {
                 }
             }
         }
+        this.registerUseCase.register({username, email , password, repeatPassword})
     }
 }
