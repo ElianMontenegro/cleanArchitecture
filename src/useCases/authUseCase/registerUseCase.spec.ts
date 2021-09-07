@@ -1,5 +1,6 @@
 import { IRegisterUserDTO } from "../../interfaces/IRegisterUseCase"
 import { RegisterUseCase } from './registerUseCase'
+import { badRequest } from '../../errors/httpError'
 
 const makeEmailValidator = () => {
     class EmailValidatorSpy{
@@ -30,33 +31,53 @@ const makeSut = () => {
 
 
 describe('RegisterUseCase', () => {
+    let thrownError : any;
     test('should return Error if email is empty',async () => {
         const { sut, user } = makeSut()
-        const res = await sut.register(user)
-        expect(res).toEqual(new Error("email"))
+        
+        try {
+            const res = await sut.register(user)
+        } catch (error) {
+            thrownError = error
+        }
+        expect(thrownError).toEqual(badRequest("email is empty"))
     })
 
     test('should return Error if username is empty',async () => {
         const { sut, user }  = makeSut()
         user.email = "any_email"
-        const res = await sut.register(user)
-        expect(res).toEqual(new Error("username"))
+        try {
+            const res = await sut.register(user)
+        } catch (error) {
+            thrownError = error
+        }
+        expect(thrownError).toEqual(badRequest("username is empty"))
     })
     test('should return Error if password is empty',async () => {
         const { sut, user } = makeSut()
         user.email = "any_email"
         user.username = "any_username"
-        const res = await sut.register(user)
-        expect(res).toEqual(new Error("password"))
+        try {
+            const res = await sut.register(user)
+        } catch (error) {
+            thrownError = error
+        }
+        expect(thrownError).toEqual(badRequest("password is empty"))
     })
+
     test('should return Error if repeatPassword is empty',async () => {
         const { sut, user }  = makeSut()
         user.email = "any_email"
         user.username = "any_username"
         user.password = "any_password"
-        const res = await sut.register(user)
-        expect(res).toEqual(new Error("repeatPassword"))
+        try {
+            const res = await sut.register(user)
+        } catch (error) {
+            thrownError = error
+        }
+        expect(thrownError).toEqual(badRequest("repeatPassword is empty"))
     })
+
     test('should return Error if email is invalid',async () => {
         const { sut, user, emailValidatorSpy }  = makeSut()
         user.email = "invalid_email"
@@ -64,8 +85,12 @@ describe('RegisterUseCase', () => {
         user.password = "any_password"
         user.repeatPassword = "any_repeatPassword"
         emailValidatorSpy.isEmailIsvalid = false
-        const res = await sut.register(user)
-        expect(res).toEqual(new Error("email is not valid"))
+        try {
+            const res = await sut.register(user)
+        } catch (error) {
+            thrownError = error
+        }
+        expect(thrownError).toEqual(badRequest("email is not valid"))
     })
 })
 
