@@ -6,5 +6,5 @@ export interface IRegisterUserDTO {
 }
 
 export interface IRegisterUseCase{
-    register(user: IRegisterUserDTO) : any
+    register(user: IRegisterUserDTO): any
 }

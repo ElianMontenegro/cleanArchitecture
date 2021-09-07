@@ -1,7 +1,7 @@
-import { IHttpResponse } from '../../interfaces/IHttp';
-import { MissingParamater } from '../../errors/clientError'
+import { IHttpResponse } from '../../../interfaces/IHttp';
+import { MissingParamater, UnauthorizedError } from '../../../errors/clientError'
 import { RegisterUserController } from './registerUserController'
-import { IRegisterUseCase, IRegisterUserDTO } from '../../interfaces/IRegisterUseCase'
+import { IRegisterUseCase, IRegisterUserDTO } from '../../../interfaces/IRegisterUseCase'
 
 const makeSut = () => {
     class RegisterUseCaseSpy implements IRegisterUseCase {
@@ -98,5 +98,7 @@ describe('Register user', () => {
         expect(registerUseCaseSpy.user.password).toEqual(httpRequest.body.password)
         expect(registerUseCaseSpy.user.repeatPassword).toEqual(httpRequest.body.repeatPassword)
     })
+
+  
     
 })
