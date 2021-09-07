@@ -2,17 +2,10 @@ import { IRegisterUseCase, IRegisterUserDTO } from "../../interfaces/IRegisterUs
 
 export class RegisterUseCase implements IRegisterUseCase {
     async register (user : IRegisterUserDTO) {
-        if(!user.email){
-            return new Error("email")
-        }
-        if(!user.username){
-            return new Error("username")
-        }
-        if(!user.password){
-            return new Error("password")
-        }
-        if(!user.repeatPassword){
-            return new Error("repeatPassword")
+        for (const [key, value] of Object.entries(user)) {
+            if(!value){
+                return Error(key)
+            }
         }
     }
 }
