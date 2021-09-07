@@ -16,42 +16,50 @@ export class RegisterUseCase implements IRegisterUseCase {
         }
     }
 }
+
+
+
+const makeSut = () => {
+    const user : IRegisterUserDTO = {
+        email : "",
+        username : "",
+        password : "",
+        repeatPassword : ""
+    }
+    const sut = new RegisterUseCase()
+    return {
+        sut, 
+        user
+    }
+}
+
+
 describe('RegisterUseCase', () => {
     test('should return Error if email is empty',async () => {
-        const sut = new RegisterUseCase()
-        let email = ""
-        let username = ""
-        let password = ""
-        let repeatPassword = ""
-        const  res = await sut.register({email,username,password, repeatPassword})
+        const { sut, user } = makeSut()
+        const  res = await sut.register(user)
         expect(res).toEqual(new Error("email"))
     })
 
     test('should return Error if username is empty',async () => {
-        const sut = new RegisterUseCase()
-        let email = "any_email"
-        let username = ""
-        let password = ""
-        let repeatPassword = ""
-        const  res = await sut.register({email,username,password, repeatPassword})
+        const { sut, user }  = makeSut()
+        user.email = "any_email"
+        const  res = await sut.register(user)
         expect(res).toEqual(new Error("username"))
     })
     test('should return Error if password is empty',async () => {
-        const sut = new RegisterUseCase()
-        let email = "any_email"
-        let username = "any_username"
-        let password = ""
-        let repeatPassword = ""
-        const  res = await sut.register({email,username,password, repeatPassword})
+        const { sut, user } = makeSut()
+        user.email = "any_email"
+        user.username = "any_username"
+        const  res = await sut.register(user)
         expect(res).toEqual(new Error("password"))
     })
     test('should return Error if repeatPassword is empty',async () => {
-        const sut = new RegisterUseCase()
-        let email = "any_email"
-        let username = "any_username"
-        let password = "any_password"
-        let repeatPassword = ""
-        const  res = await sut.register({email,username,password, repeatPassword})
+        const { sut, user }  = makeSut()
+        user.email = "any_email"
+        user.username = "any_username"
+        user.password = "any_password"
+        const  res = await sut.register(user)
         expect(res).toEqual(new Error("repeatPassword"))
     })
     
