@@ -2,6 +2,17 @@ import { IRegisterUserDTO } from "../../interfaces/IRegisterUseCase"
 import { RegisterUseCase } from './registerUseCase'
 
 
+
+const makeEmailValidatorSpy = () => {
+    class EmailValidator{
+        public isValid(email: string): Boolean{
+            return false
+        }
+    }
+    return new EmailValidator()
+}
+
+
 const makeSut = () => {
     const user : IRegisterUserDTO = {
         email : "",
@@ -9,7 +20,7 @@ const makeSut = () => {
         password : "",
         repeatPassword : ""
     }
-    const sut = new RegisterUseCase()
+    const sut = new RegisterUseCase(makeEmailValidatorSpy())
     return {
         sut, 
         user
@@ -48,8 +59,11 @@ describe('RegisterUseCase', () => {
     test('should return Error if email is invalid',async () => {
         const { sut, user }  = makeSut()
         user.email = "invalid_email"
+        user.username = "any_username"
+        user.password = "any_password"
+        user.repeatPassword = "any_repeatPassword"
         const  res = await sut.register(user)
-        expect(res).toEqual(new Error("repeatPassword"))
+        expect(res).toEqual(new Error("email is not valid"))
     })
 })
 
