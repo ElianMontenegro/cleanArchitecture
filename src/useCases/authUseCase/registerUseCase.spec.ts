@@ -1,15 +1,5 @@
-import { IRegisterUseCase, IRegisterUserDTO } from "../../interfaces/IRegisterUseCase"
-
-export class RegisterUseCase implements IRegisterUseCase {
-    async register (user : IRegisterUserDTO) {
-        for (const [key, value] of Object.entries(user)) {
-            if(!value){
-                return Error(key)
-            }
-        }
-    }
-}
-
+import { IRegisterUserDTO } from "../../interfaces/IRegisterUseCase"
+import { RegisterUseCase } from './registerUseCase'
 
 
 const makeSut = () => {
@@ -55,7 +45,12 @@ describe('RegisterUseCase', () => {
         const  res = await sut.register(user)
         expect(res).toEqual(new Error("repeatPassword"))
     })
-    
+    test('should return Error if email is invalid',async () => {
+        const { sut, user }  = makeSut()
+        user.email = "invalid_email"
+        const  res = await sut.register(user)
+        expect(res).toEqual(new Error("repeatPassword"))
+    })
 })
 
 
