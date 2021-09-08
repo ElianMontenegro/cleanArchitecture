@@ -1,14 +1,8 @@
 const { MongoClient } = require("mongodb");
+import { LoadUserByRepostitory } from './loadUserByRepository'
 let client: any;
 let db : any;
 
-class LoadUserByRepostitory {
-    constructor(public userModel: any){}
-    public async load(email: string){
-        const user = await this.userModel.findOne({email})
-        return user
-    }
-}
 
 const makeSut = () => {
     const userModel = db.collection('user')
@@ -20,8 +14,6 @@ const makeSut = () => {
 }
 
 describe('LoadUserByRepostitory', () => {
-    
-
     beforeAll(async () => {
         client = await MongoClient.connect(process.env.MONGO_URL, {
           useNewUrlParser: true,
@@ -47,11 +39,10 @@ describe('LoadUserByRepostitory', () => {
 
     test('should return an user if user is found', async () => {
         const { sut,userModel } = makeSut()
-        const fakeUser = {
+        const fakeUser = await userModel.insertOne({
             email : "emailExist@gmail.com"
-        }
-        await userModel.insertOne(fakeUser)
+        })
         const user = await sut.load("emailExist@gmail.com")
-        expect(user.email).toBe("emailExist@gmail.com")
+        expect(user._id).toEqual(fakeUser.insertedId)
     })
 })
