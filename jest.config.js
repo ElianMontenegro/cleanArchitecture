@@ -9,4 +9,5 @@ module.exports = {
     ],
     collectCoverageFrom: ['<rootDir>/src/***/*.ts'],
     moduleFileExtensions: ['js', 'ts'],
+    preset: '@shelf/jest-mongodb'
 }
