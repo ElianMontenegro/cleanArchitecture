@@ -2,6 +2,18 @@ import { IRegisterUserDTO } from "../../interfaces/IRegisterUseCase"
 import { RegisterUseCase } from './registerUseCase'
 import { badRequest } from '../../errors/httpError'
 
+
+const makeLoadUserByEmailRepository = () => {
+    class LoadUserByEmailRepositorySpy{
+        user = {}
+        public async load(email: string) {
+            return this.user
+        }
+        
+    }
+    return new LoadUserByEmailRepositorySpy()
+}
+
 const makeEmailValidator = () => {
     class EmailValidatorSpy{
         isEmailIsvalid = true
@@ -34,9 +46,14 @@ const makeSut = () => {
         password : "",
         repeatPassword : ""
     }
+    const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepository()
     const comparePasswordSpy = makeComparePassword()
     const emailValidatorSpy = makeEmailValidator()
-    const sut = new RegisterUseCase(emailValidatorSpy, comparePasswordSpy)
+    const sut = new RegisterUseCase(
+        emailValidatorSpy, 
+        comparePasswordSpy, 
+        loadUserByEmailRepositorySpy
+    )
     return {
         sut, 
         user,
@@ -122,6 +139,22 @@ describe('RegisterUseCase', () => {
         }
         expect(thrownError).toEqual(badRequest("passwords not match"))
     })
+
+    test('should return error if makeLoadUserByEmailRepository return a user', async () => {
+        const { sut, user } = makeSut()
+        user.email = "email_notExist"
+        user.username = "any_username"
+        user.password = "any_password"
+        user.repeatPassword = "any_repeatPassword"
+        
+        try {
+            await sut.register(user)
+        } catch (error) {
+            thrownError = error
+        }
+        expect(thrownError).toEqual(badRequest("user already exist"))
+    })
+    
     
 })
 
