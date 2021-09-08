@@ -1,12 +1,4 @@
-import { IComparePassword } from '../interfaces/IComparePassword'
-class ComparePassword implements IComparePassword{
-    isMatch(password: string, repeatPassword: string): Boolean{
-        if (password !== repeatPassword){
-            return false
-        }
-        return true
-    }
-}
+import { ComparePassword } from './comparePassword';
 
 describe('comparePassword', () => {
     test('should return false if passwords not match', () => {
