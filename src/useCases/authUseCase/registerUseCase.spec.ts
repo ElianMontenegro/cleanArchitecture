@@ -1,7 +1,7 @@
-import { IRegisterUserDTO } from "../../interfaces/IRegisterUseCase"
+import { IRegisterUserDTO } from "../../presentation/interfaces/IRegisterUseCase"
 import { RegisterUseCase } from './registerUseCase'
-import { badRequest, serverError } from '../../errors/httpError'
-import { IUserModel } from "../../interfaces/IUserModel"
+import { badRequest, serverError } from '../../presentation/errors/httpError'
+import { IUserModel } from "../../presentation/interfaces/IUserModel"
 
 
 class EncrypterSpy{

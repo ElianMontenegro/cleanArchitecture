@@ -1,4 +1,4 @@
-import { IUserModel } from '../../interfaces/IUserModel'
+import { IUserModel } from '../../presentation/interfaces/IUserModel'
 import { mongoHelper } from '../helpers/mongoHelper'
 import { UserRepostitory } from './userRepository'
 

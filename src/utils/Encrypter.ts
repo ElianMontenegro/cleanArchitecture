@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import { IEncrypter } from '../interfaces/IEncrypter';
+import { IEncrypter } from '../presentation/interfaces/IEncrypter';
 export class Encrypter implements IEncrypter{
     public async hash(value: string, salt: number): Promise<string> {
         const valueHash = await bcrypt.hash(value , salt)

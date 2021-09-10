@@ -1,4 +1,4 @@
-import { IComparePassword } from "../interfaces/IComparePassword"
+import { IComparePassword } from "../presentation/interfaces/IComparePassword"
 
 
 export class ComparePassword implements IComparePassword{

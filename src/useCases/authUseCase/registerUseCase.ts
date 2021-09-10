@@ -1,10 +1,10 @@
-import { IRegisterUseCase, IRegisterUserDTO } from "../../interfaces/IRegisterUseCase";
-import { IComparePassword } from '../../interfaces/IComparePassword'
-import { IEmailValidator } from '../../interfaces/IEmailValidator'
+import { IRegisterUseCase, IRegisterUserDTO } from "../../presentation/interfaces/IRegisterUseCase";
+import { IComparePassword } from '../../presentation/interfaces/IComparePassword'
+import { IEmailValidator } from '../../presentation/interfaces/IEmailValidator'
 import { IUserRepository } from "../../infra/IUserRepository";
-import { badRequest, serverError } from '../../errors/httpError'
-import { IEncrypter } from "../../interfaces/IEncrypter";
-import { IUserModel } from "../../interfaces/IUserModel";
+import { badRequest, serverError } from '../../presentation/errors/httpError'
+import { IEncrypter } from "../../presentation/interfaces/IEncrypter";
+import { IUserModel } from "../../presentation/interfaces/IUserModel";
 
 export class RegisterUseCase implements IRegisterUseCase {
     constructor(

@@ -1,7 +1,7 @@
-import { IHttpResponse } from '../../../interfaces/IHttp';
-import { MissingParamater, UnauthorizedError } from '../../../errors/clientError'
+import { IHttpResponse } from '../../../presentation/interfaces/IHttp';
+import { MissingParamater, UnauthorizedError } from '../../../presentation/errors/clientError'
 import { RegisterUserController } from './registerUserController'
-import { IRegisterUseCase, IRegisterUserDTO } from '../../../interfaces/IRegisterUseCase'
+import { IRegisterUseCase, IRegisterUserDTO } from '../../../presentation/interfaces/IRegisterUseCase'
 
 const makeSut = () => {
     class RegisterUseCaseSpy implements IRegisterUseCase {

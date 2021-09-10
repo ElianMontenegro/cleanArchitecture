@@ -1,6 +1,6 @@
-import { IHttpRequest, IHttpResponse } from '../../../interfaces/IHttp';
-import { MissingParamater } from '../../../errors/clientError'
-import { IRegisterUseCase } from '../../../interfaces/IRegisterUseCase'
+import { IHttpRequest, IHttpResponse } from '../../../presentation/interfaces/IHttp';
+import { MissingParamater } from '../../../presentation/errors/clientError'
+import { IRegisterUseCase } from '../../../presentation/interfaces/IRegisterUseCase'
 
 export class RegisterUserController {
     constructor(private readonly registerUseCase : IRegisterUseCase){

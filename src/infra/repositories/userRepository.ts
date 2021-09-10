@@ -1,6 +1,6 @@
 import { IUserRepository } from "../IUserRepository"
 import { mongoHelper } from "../helpers/mongoHelper"
-import { IUserModel } from "../../interfaces/IUserModel"
+import { IUserModel } from "../../presentation/interfaces/IUserModel"
 
 
 export class UserRepostitory implements IUserRepository{
