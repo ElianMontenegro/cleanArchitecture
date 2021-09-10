@@ -1,17 +1,43 @@
 import { IRegisterUserDTO } from "../../interfaces/IRegisterUseCase"
 import { RegisterUseCase } from './registerUseCase'
-import { badRequest } from '../../errors/httpError'
+import { badRequest, serverError } from '../../errors/httpError'
+import { IUserModel } from "../../interfaces/IUserModel"
 
 
-const makeLoadUserByEmailRepository = () => {
-    class LoadUserByEmailRepositorySpy{
-        user = {}
-        public async load(email: string) {
+class EncrypterSpy{
+    password : any
+    salt : any
+    hashedPassword : any
+    isValid : any
+    public hash(value: string, salt: number){
+        this.password = value
+        this.salt = salt
+        return this.password
+    }
+    public compare(value: string, hashValue: string){
+        this.password = value
+        this.hashedPassword = hashValue
+        return this.isValid
+    }
+}
+
+const makeUserRepository = () => {
+    
+    class UserRepositorySpy{
+        user = {
+            email : "any_email",
+            username : "any_username",
+            password : "any_password",
+        }
+        public async load(email: string): Promise<IUserModel> {
             return this.user
+        }
+        public async save(user : IUserModel): Promise<IUserModel>{
+            return user
         }
         
     }
-    return new LoadUserByEmailRepositorySpy()
+    return new UserRepositorySpy()
 }
 
 const makeEmailValidator = () => {
@@ -46,13 +72,15 @@ const makeSut = () => {
         password : "any_password",
         repeatPassword : "any_repeatPassword"
     }
-    const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepository()
+    const encrypterSpy = new EncrypterSpy()
+    const userRepository = makeUserRepository()
     const comparePasswordSpy = makeComparePassword()
     const emailValidatorSpy = makeEmailValidator()
     const sut = new RegisterUseCase(
         emailValidatorSpy, 
         comparePasswordSpy, 
-        loadUserByEmailRepositorySpy
+        userRepository,
+        encrypterSpy
     )
     return {
         sut, 
@@ -130,7 +158,7 @@ describe('RegisterUseCase', () => {
         expect(thrownError).toEqual(badRequest("passwords not match"))
     })
 
-    test('should return error if makeLoadUserByEmailRepository return a user', async () => {
+    test('should return error if userRepository return a user', async () => {
         const { sut, user } = makeSut()
         user.email = "email_Exist"
         try {
@@ -140,6 +168,26 @@ describe('RegisterUseCase', () => {
         }
         expect(thrownError).toEqual(badRequest("user already exist"))
     })
+    
+    test('should return Encrypter hash with correct values', () => {
+        const sut = new EncrypterSpy();
+        const password = "any_password"
+        const salt = 10
+        sut.hash(password, salt);
+        expect(sut.password).toBe(password)
+        expect(sut.salt).toBe(salt)
+    }) 
+
+    test('should return Encrypter compare with correct values', () => {
+        const sut = new EncrypterSpy();
+        const password = "any_password"
+        const hashedPassword = "any_hashedPassword"
+        sut.compare(password, hashedPassword);
+        expect(sut.password).toBe(password)
+        expect(sut.hashedPassword).toBe(hashedPassword)
+    }) 
+    
+   
     
     
 })
