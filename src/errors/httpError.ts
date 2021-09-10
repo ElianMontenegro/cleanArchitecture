@@ -27,9 +27,9 @@ export const Unauthorized = (message: string): IHttpResponse => ({
 })
 
 
-export const serverError = (error: Error): IHttpResponse => ({
+export const serverError = (message: string): IHttpResponse => ({
     statusCode: 500,
-    body: error
+    body: message
 })
 
 export const catchException = (error: IExeption ): IHttpResponse => ({
