@@ -9,7 +9,6 @@ export class RegisterUseCase implements IRegisterUseCase {
         private readonly emailValidator : IEmailValidator,
         private readonly comparePassword : IComparePassword,
         private readonly userRepository : IUserRepository
-
     ){}
     async register (user : IRegisterUserDTO) {
         for (const [key, value] of Object.entries(user)) {
@@ -26,6 +25,7 @@ export class RegisterUseCase implements IRegisterUseCase {
         if(await this.userRepository.load(user.email)){
             throw badRequest("user already exist")
         }
-      
+        
+        
     }
 }

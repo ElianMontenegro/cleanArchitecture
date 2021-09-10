@@ -41,10 +41,10 @@ const makeComparePassword = () => {
 
 const makeSut = () => {
     const user : IRegisterUserDTO = {
-        email : "",
-        username : "",
-        password : "",
-        repeatPassword : ""
+        email : "any_email",
+        username : "any_username",
+        password : "any_password",
+        repeatPassword : "any_repeatPassword"
     }
     const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepository()
     const comparePasswordSpy = makeComparePassword()
@@ -67,6 +67,7 @@ describe('RegisterUseCase', () => {
     let thrownError : any;
     test('should return Error if email is empty',async () => {
         const { sut, user } = makeSut()
+        user.email = ""
         try {
             await sut.register(user)
         } catch (error) {
@@ -77,7 +78,7 @@ describe('RegisterUseCase', () => {
 
     test('should return Error if username is empty',async () => {
         const { sut, user }  = makeSut()
-        user.email = "any_email"
+        user.username = ""
         try {
             await sut.register(user)
         } catch (error) {
@@ -87,8 +88,7 @@ describe('RegisterUseCase', () => {
     })
     test('should return Error if password is empty',async () => {
         const { sut, user } = makeSut()
-        user.email = "any_email"
-        user.username = "any_username"
+        user.password = ""
         try {
             await sut.register(user)
         } catch (error) {
@@ -99,9 +99,7 @@ describe('RegisterUseCase', () => {
 
     test('should return Error if repeatPassword is empty',async () => {
         const { sut, user }  = makeSut()
-        user.email = "any_email"
-        user.username = "any_username"
-        user.password = "any_password"
+        user.repeatPassword = ""
         try {
             await sut.register(user)
         } catch (error) {
@@ -112,10 +110,6 @@ describe('RegisterUseCase', () => {
 
     test('should return Error if email is invalid',async () => {
         const { sut, user, emailValidatorSpy }  = makeSut()
-        user.email = "invalid_email"
-        user.username = "any_username"
-        user.password = "any_password"
-        user.repeatPassword = "any_repeatPassword"
         emailValidatorSpy.isEmailIsvalid = false
         try {
             await sut.register(user)
@@ -127,10 +121,6 @@ describe('RegisterUseCase', () => {
 
     test('should return error if the isMatch return false', async () => {
         const { user, sut,  comparePasswordSpy}  = makeSut()
-        user.email = "invalid_email"
-        user.username = "any_username"
-        user.password = "any_password"
-        user.repeatPassword = "any_repeatPassword"
         comparePasswordSpy.isPasswordMatch = false
         try {
             await sut.register(user)
@@ -142,11 +132,7 @@ describe('RegisterUseCase', () => {
 
     test('should return error if makeLoadUserByEmailRepository return a user', async () => {
         const { sut, user } = makeSut()
-        user.email = "email_notExist"
-        user.username = "any_username"
-        user.password = "any_password"
-        user.repeatPassword = "any_repeatPassword"
-        
+        user.email = "email_Exist"
         try {
             await sut.register(user)
         } catch (error) {
