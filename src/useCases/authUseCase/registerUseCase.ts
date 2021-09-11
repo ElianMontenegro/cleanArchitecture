@@ -35,6 +35,7 @@ export class RegisterUseCase implements IRegisterUseCase {
         try {
             const userSave = await this.userRepository.save(user)
             const accessToken = this.jwt.accessToken(userSave._id!);
+            return accessToken
         } catch (error) {
             console.log(error);
         }

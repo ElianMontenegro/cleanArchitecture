@@ -221,6 +221,13 @@ describe('RegisterUseCase', () => {
         await sut.register(user);
         expect(tokenGeneratorSpy.token.userId).toBe(userRepository.user.id)
     }) 
+
+
+    test('should return an accessToken id corrent credential provided',async () => {
+        const { sut, user, userRepository, tokenGeneratorSpy }= makeSut()
+        const accessToken : any  = await sut.register(user);
+        expect(tokenGeneratorSpy.token.userId).toBe(accessToken.userId)
+    }) 
    
 
    
