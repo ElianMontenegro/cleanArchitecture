@@ -34,9 +34,11 @@ export class RegisterUseCase implements IRegisterUseCase {
             email : data.email, 
             password : passwordHash
         }
-        const userSave = await this.userRepository.save(user)
-        if(!userSave){
-            throw serverError("issue with user register ")
+       
+        try {
+            const userSave = await this.userRepository.save(user)
+        } catch (error) {
+            console.log(error);
         }
 
     }

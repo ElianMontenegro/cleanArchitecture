@@ -1,6 +1,6 @@
 import { IRegisterUserDTO } from "../../presentation/interfaces/IRegisterUseCase"
 import { RegisterUseCase } from './registerUseCase'
-import { badRequest, serverError } from '../../presentation/errors/httpError'
+import { badRequest } from '../../presentation/errors/httpError'
 import { IUserModel } from "../../presentation/interfaces/IUserModel"
 
 
@@ -29,11 +29,13 @@ const makeUserRepository = () => {
     class UserRepositorySpy{
        
         res : any
+        username: any
         public async load(email: string): Promise<IUserModel> {
-            return this.res 
+            return this.res
         }
         public async save(user : IUserModel): Promise<IUserModel>{
-            return user
+            this.username = user.username
+            return this.username
         }
         
     }
@@ -172,18 +174,24 @@ describe('RegisterUseCase', () => {
         expect(thrownError).toEqual(badRequest("user already exist"))
     })
     
-    test('should return Encrypter hash with correct values',async () => {
+    test('should call Encrypter hash() with correct values',async () => {
         const { sut, encrypterSpy, userRepository, user }= makeSut()
         const password = "any_password"
         const salt = 10
-        userRepository.res = null
         await sut.register(user)
+        userRepository.res = null
         expect(encrypterSpy.password).toBe(password)
         expect(encrypterSpy.salt).toBe(salt)
     }) 
 
+    test('should call userRepository save() with correct values',async () => {
+        const { sut, userRepository, user }= makeSut()
+        await sut.register(user);
+        expect(userRepository.username).toBe(user.username)
+    }) //Corregir esto
+
    
-    
+
    
     
     
