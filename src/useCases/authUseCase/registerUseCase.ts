@@ -1,17 +1,14 @@
 import { IRegisterUseCase, IRegisterUserDTO } from "../../presentation/interfaces/IRegisterUseCase";
-import { IComparePassword } from '../../presentation/interfaces/IComparePassword'
-import { IEmailValidator } from '../../presentation/interfaces/IEmailValidator'
 import { IUserRepository } from "../../infra/IUserRepository";
 import { badRequest, serverError } from '../../presentation/errors/httpError'
-import { IEncrypter } from "../../presentation/interfaces/IEncrypter";
-import { IUserModel } from "../../presentation/interfaces/IUserModel";
-
+import { IUserModel, IEncrypter, IEmailValidator, IComparePassword, IJwt } from '../../presentation/interfaces'
 export class RegisterUseCase implements IRegisterUseCase {
     constructor(
         private readonly emailValidator : IEmailValidator,
         private readonly comparePassword : IComparePassword,
         private readonly userRepository : IUserRepository,
-        private readonly encrypter : IEncrypter
+        private readonly encrypter : IEncrypter,
+        private readonly jwt: IJwt
     ){}
     async register (data : IRegisterUserDTO) {
         for (const [key, value] of Object.entries(data)) {
@@ -37,6 +34,7 @@ export class RegisterUseCase implements IRegisterUseCase {
        
         try {
             const userSave = await this.userRepository.save(user)
+            const accessToken = this.jwt.accessToken(userSave._id!);
         } catch (error) {
             console.log(error);
         }

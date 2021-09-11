@@ -4,6 +4,22 @@ import { badRequest } from '../../presentation/errors/httpError'
 import { IUserModel } from "../../presentation/interfaces/IUserModel"
 
 
+const makeTokenGenerator = () => {
+    class TokenGeneratorSpy{
+        userId : any
+        token: any
+        public accessToken(userId: string): string{
+            this.userId = userId
+            return this.token
+        }
+    }
+    const tokenGenerator = new TokenGeneratorSpy()
+    tokenGenerator.token = {
+        userId : "any_id"
+    }
+    return tokenGenerator
+}
+
 const makeEncrypter = () => {
     class EncrypterSpy{
         password : any
@@ -30,16 +46,23 @@ const makeUserRepository = () => {
        
         res : any
         username: any
+        user: any
         public async load(email: string): Promise<IUserModel> {
             return this.res
         }
         public async save(user : IUserModel): Promise<IUserModel>{
             this.username = user.username
-            return this.username
+            return this.user
         }
         
     }
-    return new UserRepositorySpy()
+    const userRepositorySpy =new UserRepositorySpy()
+    userRepositorySpy.user = {
+        id: 'any_id'
+    }
+    return userRepositorySpy
+
+
 }
 
 const makeEmailValidator = () => {
@@ -74,6 +97,7 @@ const makeSut = () => {
         password : "any_password",
         repeatPassword : "any_repeatPassword"
     }
+    const tokenGeneratorSpy = makeTokenGenerator()
     const encrypterSpy = makeEncrypter()
     const userRepository = makeUserRepository()
     const comparePasswordSpy = makeComparePassword()
@@ -83,7 +107,8 @@ const makeSut = () => {
         emailValidatorSpy, 
         comparePasswordSpy, 
         userRepository,
-        encrypterSpy
+        encrypterSpy,
+        tokenGeneratorSpy
     )
     return {
         sut, 
@@ -91,7 +116,8 @@ const makeSut = () => {
         emailValidatorSpy,
         comparePasswordSpy,
         encrypterSpy,
-        userRepository
+        userRepository,
+        tokenGeneratorSpy
     }
 }
 
@@ -188,8 +214,13 @@ describe('RegisterUseCase', () => {
         const { sut, userRepository, user }= makeSut()
         await sut.register(user);
         expect(userRepository.username).toBe(user.username)
-    }) //Corregir esto
+    }) 
 
+    test('should call TokenGenerator call with correct userId',async () => {
+        const { sut, tokenGeneratorSpy, user, userRepository }= makeSut()
+        await sut.register(user);
+        expect(tokenGeneratorSpy.token.userId).toBe(userRepository.user.id)
+    }) 
    
 
    
