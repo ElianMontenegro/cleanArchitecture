@@ -1,3 +1,3 @@
-export interface IJwt{
-    accessToken(userId: string): string
+export interface IJwt {
+    generateToken(value: string, email?:string): string
 }

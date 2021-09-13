@@ -1,14 +1,15 @@
 import { IRegisterUserDTO } from "../../presentation/interfaces/IRegisterUseCase"
 import { RegisterUseCase } from './registerUseCase'
-import { badRequest } from '../../presentation/errors/httpError'
+import { badRequest } from '../../presentation/helpers/httpError'
 import { IUserModel } from "../../presentation/interfaces/IUserModel"
 
 
 const makeTokenGenerator = () => {
     class TokenGeneratorSpy{
+      
         userId : any
         token: any
-        public accessToken(userId: string): string{
+        public generateToken(userId: string): string{
             this.userId = userId
             return this.token
         }
@@ -228,10 +229,7 @@ describe('RegisterUseCase', () => {
         const accessToken : any  = await sut.register(user);
         expect(tokenGeneratorSpy.token.userId).toBe(accessToken.userId)
     }) 
-   
-
-   
-    
+  
     
 })
 
