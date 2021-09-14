@@ -1,6 +1,6 @@
 import { IRegisterUseCase, IRegisterUserDTO } from "../../presentation/interfaces/IRegisterUseCase";
 import { IUserRepository } from "../../infra/IUserRepository";
-import { badRequest } from '../../presentation/helpers/httpError'
+import { badRequest, serverError } from '../../presentation/helpers/httpError'
 import { IUserModel, IEncrypter, IEmailValidator, IComparePassword, IJwt } from '../../presentation/interfaces'
 export class RegisterUseCase implements IRegisterUseCase {
     constructor(
@@ -34,10 +34,12 @@ export class RegisterUseCase implements IRegisterUseCase {
        
         try {
             const userSave = await this.userRepository.save(user)
-            const accessToken = this.jwt.generateToken(userSave._id!);
-            return accessToken
-        } catch (error) {
-            console.log(error);
+            return {
+                accessToken: this.jwt.token(userSave._id!),
+                refreshToken: this.jwt.token(userSave._id!, data.email),
+            }
+        } catch (error: any) {
+            throw serverError(error);
         }
 
     }

@@ -1,6 +1,6 @@
 import { IRegisterUserDTO } from "../../presentation/interfaces/IRegisterUseCase"
 import { RegisterUseCase } from './registerUseCase'
-import { badRequest } from '../../presentation/helpers/httpError'
+import { badRequest, serverError } from '../../presentation/helpers/httpError'
 import { IUserModel } from "../../presentation/interfaces/IUserModel"
 
 
@@ -8,15 +8,16 @@ const makeTokenGenerator = () => {
     class TokenGeneratorSpy{
       
         userId : any
-        token: any
-        public generateToken(userId: string): string{
+        Token: any
+        public token(userId: string, email:string): string{
             this.userId = userId
-            return this.token
+            return this.Token
         }
     }
     const tokenGenerator = new TokenGeneratorSpy()
-    tokenGenerator.token = {
-        userId : "any_id"
+    tokenGenerator.Token = {
+        userId : "any_id",
+        email: 'any_email'
     }
     return tokenGenerator
 }
@@ -59,7 +60,9 @@ const makeUserRepository = () => {
     }
     const userRepositorySpy =new UserRepositorySpy()
     userRepositorySpy.user = {
-        id: 'any_id'
+        id: 'any_id',
+        email: 'any_email'
+       
     }
     return userRepositorySpy
 
@@ -220,16 +223,34 @@ describe('RegisterUseCase', () => {
     test('should call TokenGenerator call with correct userId',async () => {
         const { sut, tokenGeneratorSpy, user, userRepository }= makeSut()
         await sut.register(user);
-        expect(tokenGeneratorSpy.token.userId).toBe(userRepository.user.id)
+        expect(tokenGeneratorSpy.Token.userId).toBe(userRepository.user.id)
+        expect(tokenGeneratorSpy.Token.email).toBe(userRepository.user.email)
     }) 
 
 
     test('should return an accessToken id corrent credential provided',async () => {
-        const { sut, user, userRepository, tokenGeneratorSpy }= makeSut()
-        const accessToken : any  = await sut.register(user);
-        expect(tokenGeneratorSpy.token.userId).toBe(accessToken.userId)
+        const { sut, user, tokenGeneratorSpy }= makeSut()
+        const { accessToken } : any  = await sut.register(user);
+        expect(tokenGeneratorSpy.Token.userId).toBe(accessToken.userId)
     }) 
+
+    test('should return an refreshToken id, email corrent credential provided',async () => {
+        const { sut, user, tokenGeneratorSpy }= makeSut()
+        const{ refreshToken } : any  = await sut.register(user);
+        expect(tokenGeneratorSpy.Token.userId).toBe(refreshToken.userId)
+        expect(tokenGeneratorSpy.Token.email).toBe(refreshToken.email)
+    })
   
+    test('should return serverError if user if not created', async () => {
+        const { sut, user, userRepository } = makeSut()
+        userRepository.user = null
+        try {
+            await sut.register(user)
+        } catch (error) {
+            thrownError = error
+        }
+        expect(thrownError).toEqual(serverError(new Error))
+    })
     
 })
 
