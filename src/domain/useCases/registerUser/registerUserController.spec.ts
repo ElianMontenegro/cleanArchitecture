@@ -4,13 +4,19 @@ import { IRegisterUseCase, IRegisterUserDTO } from '../../../presentation/interf
 import { badRequest } from '../../../presentation/helpers/httpError';
 
 const makeSut = () => {
+    const  user = {
+        username : "any_username",
+        email: "any_email",
+        password : "any_password",
+        repeatPassword: "any_repeatPassword"
+    }
     class RegisterUseCaseSpy implements IRegisterUseCase {
         //mock
         user = {
-            username : "",
-            email: "",
-            password : "",
-            repeatPassword: ""
+            username : "any_username",
+            email: "any_email",
+            password : "any_password",
+            repeatPassword: "any_repeatPassword"
         }
         register (user : IRegisterUserDTO) {
             this.user.username = user.username
@@ -23,76 +29,56 @@ const makeSut = () => {
     const sut = new RegisterUserController(registerUseCaseSpy);
     return {
         registerUseCaseSpy,
-        sut
+        sut,
+        user
     }
 }
 
 
 describe('Register user', () => {
-    test('should return 400 if email is not provided', () => {
-        const { sut } = makeSut()
-        const httpRequest = {
-            body: {
-                username: 'any_username',
-                password: 'any_password'
-            }
-        }
-        const httpResponse : IHttpResponse = sut.handle(httpRequest)!
-        expect(httpResponse).toEqual(badRequest('email'))
-    }),
-
-    test('should return 400 if username is not provided', () => {
-        const { sut } = makeSut()
-        const httpRequest = {
-            body: {
-                email: 'any_email',
-                password: 'any_password'
-            }
-        }
+    test('should return 400 if params  are not provided', () => {
+        const { sut , user} = makeSut()
+        user.username = ''
+        const httpRequest = { body: user}
         const httpResponse : IHttpResponse = sut.handle(httpRequest)!
         expect(httpResponse).toEqual(badRequest('username'))
+        
+    }),
+
+    test('should return 400 if email is not provided', () => {
+        const { sut, user } = makeSut()
+        user.email = ''
+        const httpRequest = { body: user }
+        const httpResponse : IHttpResponse = sut.handle(httpRequest)!
+        expect(httpResponse).toEqual(badRequest('email'))
     })
 
     test('should return 400 if password is not provided', () => {
-        const { sut } = makeSut()
-        const httpRequest = {
-            body: {
-                username: 'any_username',
-                email: 'any_email'
-            }
-        }
+        const { sut, user } = makeSut()
+        user.password = ''
+        const httpRequest = { body: user }
         const httpResponse : IHttpResponse = sut.handle(httpRequest)!
         expect(httpResponse).toEqual(badRequest('password'))
     })
 
     test('should return 400 if repeatPassword is not provided', () => {
-        const { sut } = makeSut()
-        const httpRequest = {
-            body: {
-                username: 'any_username',
-                email: 'any_email',
-                password: 'any_repeatPassword'
-            }
-        }
+        const { sut, user } = makeSut()
+        user.repeatPassword = ''
+        const httpRequest = { body: user }
         const httpResponse : IHttpResponse = sut.handle(httpRequest)!
         expect(httpResponse).toEqual(badRequest('repeatPassword'))
     })
 
     test('should call RegisterUseCase with correct params', () => {
-        const { sut, registerUseCaseSpy } = makeSut()
+        const { sut, registerUseCaseSpy, user } = makeSut()
         const httpRequest = {
-            body: {
-                username: 'any_username',
-                email: 'any_email',
-                password: 'any_password',
-                repeatPassword: 'any_repeatPassword'
-            }
+            body: { user }
         }
         sut.handle(httpRequest)!
-        expect(registerUseCaseSpy.user.username).toEqual(httpRequest.body.username)
-        expect(registerUseCaseSpy.user.email).toEqual(httpRequest.body.email)
-        expect(registerUseCaseSpy.user.password).toEqual(httpRequest.body.password)
-        expect(registerUseCaseSpy.user.repeatPassword).toEqual(httpRequest.body.repeatPassword)
+        expect(registerUseCaseSpy.user.username).toEqual(httpRequest.body.user.username)
+        expect(registerUseCaseSpy.user.email).toEqual(httpRequest.body.user.email)
+        expect(registerUseCaseSpy.user.password).toEqual(httpRequest.body.user.password)
+        expect(registerUseCaseSpy.user.repeatPassword).toEqual(httpRequest.body.user.repeatPassword)
     })
 
   
