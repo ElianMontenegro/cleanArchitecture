@@ -1,6 +1,6 @@
 import { IHttpRequest, IHttpResponse } from '../../../presentation/interfaces/IHttp';
-import { MissingParamater } from '../../../presentation/errors/clientError'
 import { IRegisterUseCase } from '../../../presentation/interfaces/IRegisterUseCase'
+import { badRequest } from '../../../presentation/helpers/httpError';
 
 export class RegisterUserController {
     constructor(private readonly registerUseCase : IRegisterUseCase){
@@ -10,10 +10,7 @@ export class RegisterUserController {
         const requiredProperties = ["username", "email", "password", "repeatPassword"];
         for (let props of requiredProperties) {
             if(!httpRequest.body[props]){
-                return {
-                    statusCode: 400,
-                    body: new MissingParamater(props)
-                }
+                return badRequest(props)
             }
         }
         const { username, email, password, repeatPassword } = httpRequest.body

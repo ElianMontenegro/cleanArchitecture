@@ -1,7 +1,7 @@
 import { IHttpResponse } from '../../../presentation/interfaces/IHttp';
-import { MissingParamater, UnauthorizedError } from '../../../presentation/errors/clientError'
 import { RegisterUserController } from './registerUserController'
 import { IRegisterUseCase, IRegisterUserDTO } from '../../../presentation/interfaces/IRegisterUseCase'
+import { badRequest } from '../../../presentation/helpers/httpError';
 
 const makeSut = () => {
     class RegisterUseCaseSpy implements IRegisterUseCase {
@@ -38,8 +38,7 @@ describe('Register user', () => {
             }
         }
         const httpResponse : IHttpResponse = sut.handle(httpRequest)!
-        expect(httpResponse.statusCode).toBe(400)
-        expect(httpResponse.body).toEqual(new MissingParamater('email'))
+        expect(httpResponse).toEqual(badRequest('email'))
     }),
 
     test('should return 400 if username is not provided', () => {
@@ -51,8 +50,7 @@ describe('Register user', () => {
             }
         }
         const httpResponse : IHttpResponse = sut.handle(httpRequest)!
-        expect(httpResponse.statusCode).toBe(400)
-        expect(httpResponse.body).toEqual(new MissingParamater('username'))
+        expect(httpResponse).toEqual(badRequest('username'))
     })
 
     test('should return 400 if password is not provided', () => {
@@ -64,8 +62,7 @@ describe('Register user', () => {
             }
         }
         const httpResponse : IHttpResponse = sut.handle(httpRequest)!
-        expect(httpResponse.statusCode).toBe(400)
-        expect(httpResponse.body).toEqual(new MissingParamater('password'))
+        expect(httpResponse).toEqual(badRequest('password'))
     })
 
     test('should return 400 if repeatPassword is not provided', () => {
@@ -78,8 +75,7 @@ describe('Register user', () => {
             }
         }
         const httpResponse : IHttpResponse = sut.handle(httpRequest)!
-        expect(httpResponse.statusCode).toBe(400)
-        expect(httpResponse.body).toEqual(new MissingParamater('repeatPassword'))
+        expect(httpResponse).toEqual(badRequest('repeatPassword'))
     })
 
     test('should call RegisterUseCase with correct params', () => {

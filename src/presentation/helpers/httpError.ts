@@ -1,4 +1,5 @@
 
+import { MissingParamError } from "../errors/missingParamsError";
 import { ServerError } from "../errors/serverError";
 import { IHttpResponse } from "../interfaces/IHttp";
 
@@ -13,7 +14,7 @@ export const success = (data: any): IHttpResponse => ({
 })
 export const badRequest = (message: string): IHttpResponse => ({
     statusCode: 400,
-    body: message
+    body: new MissingParamError(message).message
 })
 
 export const notFound = (message: string): IHttpResponse => ({
