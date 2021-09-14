@@ -2,7 +2,6 @@ import { IUserRepository } from "../IUserRepository"
 import { mongoHelper } from "../helpers/mongoHelper"
 import { IUserModel } from "../../presentation/interfaces/IUserModel"
 
-
 export class UserRepostitory implements IUserRepository{
     
     public async load(email: string): Promise<IUserModel>{
@@ -12,7 +11,7 @@ export class UserRepostitory implements IUserRepository{
     }
 
     public async save(user : IUserModel): Promise<any> {
-        const userCollection  = mongoHelper.getCollection("user")
+        const userCollection = mongoHelper.getCollection("user")
         const userNew = await userCollection.insertOne(user)
         return userNew
     }

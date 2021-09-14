@@ -14,6 +14,7 @@ const makeSut = () => {
 
 describe('UserRepostitory', () => {
     beforeAll(async () => {
+        
         await mongoHelper.connect(process.env.MONGO_URL!)
     });
 
