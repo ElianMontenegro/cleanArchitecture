@@ -1,7 +1,7 @@
-import { IRegisterUserDTO } from "../../presentation/interfaces/IRegisterUseCase"
+import { IRegisterUserDTO } from "../../../presentation/interfaces/IRegisterUseCase"
 import { RegisterUseCase } from './registerUseCase'
-import { badRequest, serverError } from '../../presentation/helpers/httpError'
-import { IUserModel } from "../../presentation/interfaces/IUserModel"
+import { badRequest, serverError } from '../../../presentation/helpers/httpError'
+import { IUserModel } from "../../../presentation/interfaces/IUserModel"
 
 
 const makeTokenGenerator = () => {
@@ -49,7 +49,7 @@ const makeUserRepository = () => {
         res : any
         username: any
         user: any
-        public async load(email: string): Promise<IUserModel> {
+        public async loadUserByEmail(email: string): Promise<IUserModel> {
             return this.res
         }
         public async save(user : IUserModel): Promise<IUserModel>{
@@ -182,6 +182,7 @@ describe('RegisterUseCase', () => {
         expect(thrownError).toEqual(badRequest("email is not valid"))
     })
 
+
     test('should return error if the isMatch return false', async () => {
         const { user, sut,  comparePasswordSpy}  = makeSut()
         comparePasswordSpy.isPasswordMatch = false
@@ -241,15 +242,28 @@ describe('RegisterUseCase', () => {
         expect(tokenGeneratorSpy.Token.email).toBe(refreshToken.email)
     })
   
+    // test('should return serverError if user if not created', async () => {
+    //     const { sut, user, userRepository } = makeSut()
+    //     userRepository.user = null
+    //     try {
+    //         await sut.register(user)
+    //     } catch (error) {
+    //         thrownError = error
+    //     }
+    //     expect(thrownError).toEqual(serverError(new Error()))
+    // })
+
     test('should return serverError if user if not created', async () => {
         const { sut, user, userRepository } = makeSut()
-        userRepository.user = null
+        jest.spyOn(userRepository, 'save').mockImplementationOnce(() => {
+            throw new Error()
+        })
         try {
             await sut.register(user)
         } catch (error) {
             thrownError = error
         }
-        expect(thrownError).toEqual(serverError(new Error))
+        expect(thrownError).toEqual(serverError(new Error()))
     })
     
 })

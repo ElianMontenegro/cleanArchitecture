@@ -1,7 +1,7 @@
-import { IRegisterUseCase, IRegisterUserDTO } from "../../presentation/interfaces/IRegisterUseCase";
-import { IUserRepository } from "../../infra/IUserRepository";
-import { badRequest, serverError } from '../../presentation/helpers/httpError'
-import { IUserModel, IEncrypter, IEmailValidator, IComparePassword, IJwt } from '../../presentation/interfaces'
+import { IRegisterUseCase, IRegisterUserDTO } from "../../../presentation/interfaces/IRegisterUseCase";
+import { IUserRepository } from "../../../infra/repositories/IUserRepository";
+import { badRequest, serverError } from '../../../presentation/helpers/httpError'
+import { IUserModel, IEncrypter, IEmailValidator, IComparePassword, IJwt } from '../../../presentation/interfaces'
 export class RegisterUseCase implements IRegisterUseCase {
     constructor(
         private readonly emailValidator : IEmailValidator,
@@ -22,7 +22,7 @@ export class RegisterUseCase implements IRegisterUseCase {
         if(!this.comparePassword.isMatch(data.password, data.repeatPassword)){
             throw badRequest("passwords not match")
         }
-        if(await this.userRepository.load(data.email)){
+        if(await this.userRepository.loadUserByEmail(data.email)){
             throw badRequest("user already exist")
         }
         const passwordHash = await this.encrypter.hash(data.password, 10)

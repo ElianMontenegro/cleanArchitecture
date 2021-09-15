@@ -8,7 +8,7 @@ class MongoHelper {
 
     public async connect(uri: string){
         this.uri = uri
-        this.client  = await MongoClient.connect(process.env.MONGO_URL, {
+        this.client  = await MongoClient.connect(this.uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
