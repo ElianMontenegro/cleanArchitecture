@@ -2,6 +2,10 @@ import { mongooseHelper } from "../helpers/mongooseHelper";
 import { userModel } from "../model/userSchema"
 import { MongoUserRepository } from "./mongoUserRepository"
 
+const makeSut = () => {
+    return new MongoUserRepository(userModel); 
+}
+
 
 describe('mongoUserRepository', () => {
     beforeAll(async () => {
@@ -17,13 +21,13 @@ describe('mongoUserRepository', () => {
     });
 
     test('should return null if user is not found',async () => {
-        const sut = new MongoUserRepository(userModel);
+        const sut = makeSut()
         const user = await sut.loadUserByEmail("emailDontExist@gmail.com");
         expect(user).toBeNull();
     })
 
     test('should return an user if user is found',async () => {
-        const sut = new MongoUserRepository(userModel);
+        const sut = makeSut()
         const userFake = new userModel({
             email : "emailExist@gmail.com",
             username : "any_username",
