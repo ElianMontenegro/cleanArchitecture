@@ -22,6 +22,18 @@ describe('mongoUserRepository', () => {
         expect(user).toBeNull();
     })
 
+    test('should return an user if user is found',async () => {
+        const sut = new MongoUserRepository(userModel);
+        const userFake = new userModel({
+            email : "emailExist@gmail.com",
+            username : "any_username",
+            password: "any_password"
+        })
+        const userFakeSave = await userFake.save();
+        const user = await sut.loadUserByEmail("emailExist@gmail.com");
+        expect(user.email).toBe(userFakeSave.email)
+    })
+    
     
     
     
