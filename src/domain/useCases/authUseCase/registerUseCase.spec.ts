@@ -58,7 +58,7 @@ const makeUserRepository = () => {
         }
         
     }
-    const userRepositorySpy =new UserRepositorySpy()
+    const userRepositorySpy = new UserRepositorySpy()
     userRepositorySpy.user = {
         id: 'any_id',
         email: 'any_email'
@@ -206,7 +206,7 @@ describe('RegisterUseCase', () => {
     })
     
     test('should call Encrypter hash() with correct values',async () => {
-        const { sut, encrypterSpy, userRepository, user }= makeSut()
+        const { sut, encrypterSpy, userRepository, user } = makeSut()
         const password = "any_password"
         const salt = 10
         await sut.register(user)

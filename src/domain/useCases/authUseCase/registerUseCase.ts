@@ -33,10 +33,10 @@ export class RegisterUseCase implements IRegisterUseCase {
         }
        
         try {
-            const userSave = await this.userRepository.save(user)
+            const userNew = await this.userRepository.save(user)
             return {
-                accessToken: this.jwt.token(userSave._id!),
-                refreshToken: this.jwt.token(userSave._id!, data.email),
+                accessToken: this.jwt.token(userNew._id!),
+                refreshToken: this.jwt.token(userNew._id!, userNew.email),
             }
         } catch (error: any) {
             throw serverError(error);

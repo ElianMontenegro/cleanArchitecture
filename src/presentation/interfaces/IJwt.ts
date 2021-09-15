@@ -1,3 +1,3 @@
 export interface IJwt {
-    token(value: string, email?:string): string
+    token(value: string, email?:string ): string
 }
