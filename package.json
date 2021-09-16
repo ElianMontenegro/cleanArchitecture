@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest ",
     "test:unit": "npm test -- -c jest-unit-config.js --passWithNoTests",
     "test:int": "npm test -- -c jest-int-config.js --passWithNoTests  --silent",
     "test:coverage": "npm test --  --coverage"
