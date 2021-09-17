@@ -1,6 +1,6 @@
 import { IHttpRequest, IHttpResponse } from '../interfaces/IHttp';
 import { IRegisterUseCase } from '../interfaces/IRegisterUseCase'
-import { badRequest } from '../helpers/httpError';
+import { badRequest, serverError, success } from '../helpers/httpError';
 import { IController } from '../interfaces/IController';
 
 export class RegisterUserController implements IController {
@@ -16,15 +16,10 @@ export class RegisterUserController implements IController {
             }
             const { username, email, password, repeatPassword } = httpRequest.body
             const tokens = await this.registerUseCase.register({username, email , password, repeatPassword})
-            return {
-                statusCode:201,
-                body: tokens
-            }
-        } catch (error) {
-            return {
-                statusCode: 400,
-                body: error
-            }
+
+            return success(tokens)
+        } catch (error : any) {
+            return serverError(error)
         }
     }
 }

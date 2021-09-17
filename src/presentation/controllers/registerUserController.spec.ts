@@ -36,36 +36,36 @@ const makeSut = () => {
 
 
 describe('Register user', () => {
-    test('should return 400 if params  are not provided', () => {
+    test('should return 400 if params  are not provided',async () => {
         const { sut , user} = makeSut()
         user.username = ''
         const httpRequest = { body: user}
-        const httpResponse : IHttpResponse = sut.handle(httpRequest)!
+        const httpResponse : IHttpResponse = await sut.handle(httpRequest)!
         expect(httpResponse).toEqual(badRequest('username'))
         
     }),
 
-    test('should return 400 if email is not provided', () => {
+    test('should return 400 if email is not provided', async () => {
         const { sut, user } = makeSut()
         user.email = ''
         const httpRequest = { body: user }
-        const httpResponse : IHttpResponse = sut.handle(httpRequest)!
+        const httpResponse : IHttpResponse = await sut.handle(httpRequest)!
         expect(httpResponse).toEqual(badRequest('email'))
     })
 
-    test('should return 400 if password is not provided', () => {
+    test('should return 400 if password is not provided', async () => {
         const { sut, user } = makeSut()
         user.password = ''
         const httpRequest = { body: user }
-        const httpResponse : IHttpResponse = sut.handle(httpRequest)!
+        const httpResponse : IHttpResponse = await sut.handle(httpRequest)!
         expect(httpResponse).toEqual(badRequest('password'))
     })
 
-    test('should return 400 if repeatPassword is not provided', () => {
+    test('should return 400 if repeatPassword is not provided', async () => {
         const { sut, user } = makeSut()
         user.repeatPassword = ''
         const httpRequest = { body: user }
-        const httpResponse : IHttpResponse = sut.handle(httpRequest)!
+        const httpResponse : IHttpResponse = await sut.handle(httpRequest)!
         expect(httpResponse).toEqual(badRequest('repeatPassword'))
     })
 

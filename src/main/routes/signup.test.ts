@@ -20,7 +20,7 @@ describe('Route SingUp', () => {
             .post("/api/singup")
             .expect("Content-Type", /json/)
             .send({username: "any_username", email : "elian@gmail.com" ,  password : "12345" , repeatPassword : "12345"})
-            .expect(201)
+            .expect(200)
     })
     
 })
