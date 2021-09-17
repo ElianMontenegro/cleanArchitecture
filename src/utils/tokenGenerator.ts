@@ -11,7 +11,7 @@ export class TokenGenerator implements IJwt{
     }
 
     token(id : string): string{
-        const token = jwt.sign(id, this.secret, { expiresIn: this.expiresIn });
+        const token = jwt.sign({id : id}, this.secret, { expiresIn: this.expiresIn });
         return token
     }
 }
