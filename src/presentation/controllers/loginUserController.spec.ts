@@ -1,38 +1,16 @@
-import { badRequest, serverError } from "../helpers/httpError";
-import { IController } from "../interfaces/IController";
-import { IHttpRequest, IHttpResponse } from "../interfaces/IHttp";
-
-
-class LoginUserController implements IController {
- 
-    async handle(httpRequest: IHttpRequest): Promise<IHttpResponse>{
-        const requiredProperties = ["email", "password"];
-        try {
-            for (const props of requiredProperties) {
-                if (!httpRequest.body[props]) {
-                    return badRequest(props)
-                }
-            }
-            return {
-                statusCode: 200,
-                body: ""
-            }
-        } catch (error:any) {
-           return serverError(error)
-        }
-    }
-}
+import { badRequest } from "../helpers/httpError";
+import { LoginUserController } from './loginUserController'
 
 
 
 describe('LoginUserController', () => {
-    test('should return 400 if email is empty', async () => {
+    test('should return 400 if email is not provided', async () => {
         const sut = new LoginUserController();
         const httpRequest = { body : { email : ''} }
         const res = await sut.handle(httpRequest)
         expect(res).toStrictEqual(badRequest('email'))
     })
-    test('should return 400 if password is empty', async () => {
+    test('should return 400 if password is not provided', async () => {
         const sut = new LoginUserController();
         const httpRequest = { 
             body : { 
@@ -43,5 +21,6 @@ describe('LoginUserController', () => {
         const res = await sut.handle(httpRequest)
         expect(res).toStrictEqual(badRequest('password'))
     })
+  
     
 })
