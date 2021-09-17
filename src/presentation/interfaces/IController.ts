@@ -1,0 +1,6 @@
+import { IHttpResponse, IHttpRequest } from "./IHttp";
+
+
+export interface IController {
+    handle: (httpRequest : IHttpRequest) => Promise<IHttpResponse>
+}

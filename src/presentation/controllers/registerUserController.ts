@@ -1,11 +1,12 @@
 import { IHttpRequest, IHttpResponse } from '../interfaces/IHttp';
 import { IRegisterUseCase } from '../interfaces/IRegisterUseCase'
 import { badRequest } from '../helpers/httpError';
+import { IController } from '../interfaces/IController';
 
-export class RegisterUserController {
+export class RegisterUserController implements IController {
     constructor(private readonly registerUseCase : IRegisterUseCase){
     }
-    handle(httpRequest: IHttpRequest): IHttpResponse {
+    async handle(httpRequest: IHttpRequest): Promise<IHttpResponse>{
         try {
             const requiredProperties = ["username", "email", "password", "repeatPassword"];
             for (let props of requiredProperties) {
@@ -14,7 +15,7 @@ export class RegisterUserController {
                 }
             }
             const { username, email, password, repeatPassword } = httpRequest.body
-            const tokens = this.registerUseCase.register({username, email , password, repeatPassword})
+            const tokens = await this.registerUseCase.register({username, email , password, repeatPassword})
             return {
                 statusCode:201,
                 body: tokens
