@@ -6,12 +6,12 @@ import { IHttpRequest, IHttpResponse } from "../interfaces/IHttp";
 class LoginUserController implements IController {
  
     async handle(httpRequest: IHttpRequest): Promise<IHttpResponse>{
+        const requiredProperties = ["email", "password"];
         try {
-            if (!httpRequest.body.email) {
-                return badRequest('email')
-            }
-            if (!httpRequest.body.password) {
-                return badRequest('password')
+            for (const props of requiredProperties) {
+                if (!httpRequest.body[props]) {
+                    return badRequest(props)
+                }
             }
             return {
                 statusCode: 200,
