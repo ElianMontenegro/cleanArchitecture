@@ -1,17 +1,5 @@
 import { badRequest } from "../../../../presentation/helpers/httpError";
-import { ILoginUseCase, ILoginUserDTO } from "./ILoginUseCase";
-
-class LoginUseCases implements ILoginUseCase{
-    async login(user: ILoginUserDTO): Promise<any>{
-        for (const [key, value] of Object.entries(user)) {
-            if (!value) {
-                throw badRequest(key);
-            }
-        }
-        
-    }
-}
-
+import { LoginUseCases } from './loginUseCase'
 
 describe('LoginUseCase', () => {
     test("should return badRequest error if email if not provided",async () => {
