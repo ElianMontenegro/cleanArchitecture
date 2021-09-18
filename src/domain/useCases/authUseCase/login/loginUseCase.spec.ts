@@ -4,7 +4,7 @@ import { LoginUseCases } from './loginUseCase'
 const makeSut = () => {
     const user = {
         email : "any_email",
-        password : "any_passworf"
+        password : "any_password"
     }
     const sut = new LoginUseCases()
     return {
@@ -17,12 +17,9 @@ const makeSut = () => {
 
 describe('LoginUseCase', () => {
     test("should return badRequest error if email if not provided",async () => {
-        const sut = new LoginUseCases();
+        const { sut, user} = makeSut();
         let throwError 
-        const user = {
-            email : "",
-            password : ""
-        }
+        user.email = ""
         try {
             await sut.login(user)
         } catch (error) {
@@ -32,12 +29,9 @@ describe('LoginUseCase', () => {
     })
 
     test("should return badRequest error if email if not provided",async () => {
-        const sut = new LoginUseCases();
+        const { sut, user} = makeSut();
         let throwError 
-        const user = {
-            email : "any_email",
-            password : ""
-        }
+        user.password = ""
         try {
             await sut.login(user)
         } catch (error) {
