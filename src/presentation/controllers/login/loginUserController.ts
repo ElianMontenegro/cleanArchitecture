@@ -1,9 +1,10 @@
 import { badRequest, serverError } from "../../helpers/httpError";
 import { IController } from "../../interfaces/IController";
 import { IHttpRequest, IHttpResponse } from "../../interfaces/IHttp";
+import { ILoginUseCase } from "../../../domain/useCases/authUseCase/login/ILoginUseCase";
 
 export class LoginUserController implements IController {
-    constructor(private readonly loginuseCase: ){}
+    constructor(private readonly loginUseCase : ILoginUseCase){}
     async handle(httpRequest: IHttpRequest): Promise<IHttpResponse>{
         const requiredProperties = ["email", "password"];
         try {
@@ -12,9 +13,11 @@ export class LoginUserController implements IController {
                     return badRequest(props)
                 }
             }
+            const { email, password } = httpRequest.body
+            const tokens = await this.loginUseCase.login({email, password})
             return {
                 statusCode: 200,
-                body: ""
+                body: tokens
             }
         } catch (error:any) {
            return serverError(error)

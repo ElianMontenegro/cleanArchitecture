@@ -1,13 +1,17 @@
+import { ILoginUseCase, ILoginUserDTO } from "../../../domain/useCases/authUseCase/login/ILoginUseCase";
 import { badRequest } from "../../helpers/httpError";
 import { LoginUserController } from './loginUserController'
 
 const makeLoginUseCase = () => {
-    class LoginUseCaseSpy {
-        email = ''
-        password = ''
-        login(email: string, password : string){
-            this.email = email
-            this.password = password
+    class LoginUseCaseSpy implements ILoginUseCase {
+        userParams = {
+            email: '',
+            password: ''
+        }
+        async login(user: ILoginUserDTO): Promise<any>{
+            this.userParams.email = user.email
+            this.userParams.password = user.password
+            return this.userParams.email
         }
     }
     return new LoginUseCaseSpy()
@@ -52,7 +56,11 @@ describe('LoginUserController', () => {
 
     test('Should call LoginUseCase with correct params', async () => {
         const { sut, user, loginUseCaseSpy }= makeSut()
-        
+        const httpRequest = { 
+            body : user 
+        }
+        const res = await sut.handle(httpRequest)
+        expect(res.body).toEqual(loginUseCaseSpy.userParams.email)
     })
   
     
