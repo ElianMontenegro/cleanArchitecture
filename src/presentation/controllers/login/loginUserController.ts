@@ -1,7 +1,5 @@
-import { badRequest, serverError, Unauthorized } from "../../helpers/httpError";
-import { IController } from "../../interfaces/IController";
-import { IHttpRequest, IHttpResponse } from "../../interfaces/IHttp";
-import { ILoginUseCase } from "../../../domain/useCases/authUseCase/login/ILoginUseCase";
+import { badRequest, serverError, success, Unauthorized } from "../../helpers/httpError";
+import { IController, ILoginUserDTO, ILoginUseCase, IHttpRequest, IHttpResponse } from './loginProtocols'
 
 export class LoginUserController implements IController {
     constructor(private readonly loginUseCase : ILoginUseCase){}
@@ -18,10 +16,7 @@ export class LoginUserController implements IController {
             if (!tokens) {
                 return Unauthorized()
             }
-            return {
-                statusCode: 200,
-                body: tokens
-            }
+            return success(tokens)
         } catch (error:any) {
            return serverError(error)
         }
