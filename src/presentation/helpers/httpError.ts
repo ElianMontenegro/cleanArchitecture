@@ -1,4 +1,5 @@
 
+import { UnauthorizedError } from "../errors/clientError";
 import { MissingParamError } from "../errors/missingParamsError";
 import { ServerError } from "../errors/serverError";
 import { IHttpResponse } from "../interfaces/IHttp";
@@ -23,9 +24,9 @@ export const notFound = (message: string): IHttpResponse => ({
 })
 
 
-export const Unauthorized = (message: string): IHttpResponse => ({
+export const Unauthorized = (): IHttpResponse => ({
     statusCode: 401,
-    body: message
+    body: new UnauthorizedError().message
 })
 
 

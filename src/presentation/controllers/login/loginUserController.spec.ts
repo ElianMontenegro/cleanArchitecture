@@ -1,17 +1,13 @@
 import { ILoginUseCase, ILoginUserDTO } from "../../../domain/useCases/authUseCase/login/ILoginUseCase";
-import { badRequest } from "../../helpers/httpError";
+import { UnauthorizedError } from "../../errors/clientError";
+import { badRequest, Unauthorized } from "../../helpers/httpError";
 import { LoginUserController } from './loginUserController'
 
 const makeLoginUseCase = () => {
     class LoginUseCaseSpy implements ILoginUseCase {
-        userParams = {
-            email: '',
-            password: ''
-        }
+        token : any
         async login(user: ILoginUserDTO): Promise<any>{
-            this.userParams.email = user.email
-            this.userParams.password = user.password
-            return this.userParams.email
+            return this.token
         }
     }
     return new LoginUseCaseSpy()
@@ -54,14 +50,24 @@ describe('LoginUserController', () => {
         expect(res).toStrictEqual(badRequest('password'))
     })
 
-    test('Should call LoginUseCase with correct params', async () => {
+    test('Should return Unauthorized if tokens are not valid', async () => {
         const { sut, user, loginUseCaseSpy }= makeSut()
         const httpRequest = { 
             body : user 
         }
+        loginUseCaseSpy.token = null
         const res = await sut.handle(httpRequest)
-        expect(res.body).toEqual(loginUseCaseSpy.userParams.email)
+        expect(res).toEqual(Unauthorized())
     })
-  
+
+    test('Should return token if useCase return a tokens', async () => {
+        const { sut, user, loginUseCaseSpy }= makeSut()
+        const httpRequest = { 
+            body : user 
+        }
+        loginUseCaseSpy.token = "any_token"
+        const res = await sut.handle(httpRequest)
+        expect(res.body).toBe( "any_token")
+    })
     
 })
