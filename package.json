@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/ElianMontenegro/cleanArchitecture#readme",
   "devDependencies": {
-    "@shelf/jest-mongodb": "^2.0.3",
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.0.1",
@@ -36,9 +35,9 @@
     "bcrypt": "^5.0.1",
     "express": "^4.17.1",
     "fast-glob": "^3.2.7",
-    "jest": "^27.1.0",
+    "jest": "^27.2.0",
     "jsonwebtoken": "^8.5.1",
-    "mongodb": "^4.1.1",
+    "mongodb": "^4.1.2",
     "mongoose": "^6.0.5"
   }
 }

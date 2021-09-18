@@ -1,7 +1,7 @@
-import { IHttpResponse } from '../interfaces/IHttp';
+import { IHttpResponse } from '../../interfaces/IHttp';
 import { RegisterUserController } from './registerUserController'
-import { IRegisterUseCase, IRegisterUserDTO } from '../interfaces/IRegisterUseCase'
-import { badRequest } from '../helpers/httpError';
+import { IRegisterUseCase, IRegisterUserDTO } from '../../interfaces/IRegisterUseCase'
+import { badRequest } from '../../helpers/httpError';
 
 const makeSut = () => {
     const  user = {

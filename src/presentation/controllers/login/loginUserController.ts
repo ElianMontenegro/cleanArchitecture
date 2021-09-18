@@ -1,9 +1,9 @@
-import { badRequest, serverError } from "../helpers/httpError";
-import { IController } from "../interfaces/IController";
-import { IHttpRequest, IHttpResponse } from "../interfaces/IHttp";
+import { badRequest, serverError } from "../../helpers/httpError";
+import { IController } from "../../interfaces/IController";
+import { IHttpRequest, IHttpResponse } from "../../interfaces/IHttp";
 
 export class LoginUserController implements IController {
- 
+    constructor(private readonly loginuseCase: ){}
     async handle(httpRequest: IHttpRequest): Promise<IHttpResponse>{
         const requiredProperties = ["email", "password"];
         try {
