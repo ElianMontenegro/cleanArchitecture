@@ -1,6 +1,6 @@
 import { IHttpResponse } from '../../interfaces/IHttp';
 import { RegisterUserController } from './registerUserController'
-import { IRegisterUseCase, IRegisterUserDTO } from '../../interfaces/IRegisterUseCase'
+import { IRegisterUseCase, IRegisterUserDTO } from '../../../domain/useCases/authUseCase/register/IRegisterUseCase'
 import { badRequest } from '../../helpers/httpError';
 
 const makeSut = () => {
@@ -18,7 +18,7 @@ const makeSut = () => {
             password : "any_password",
             repeatPassword: "any_repeatPassword"
         }
-        register (user : IRegisterUserDTO) {
+        async register (user : IRegisterUserDTO) {
             this.user.username = user.username
             this.user.email = user.email
             this.user.password = user.password

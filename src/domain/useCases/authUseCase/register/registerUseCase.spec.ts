@@ -1,7 +1,7 @@
-import { IRegisterUserDTO } from "../../../presentation/interfaces/IRegisterUseCase"
+import { IRegisterUserDTO } from "./IRegisterUseCase"
 import { RegisterUseCase } from './registerUseCase'
-import { badRequest, serverError } from '../../../presentation/helpers/httpError'
-import { IUserModel } from "../../../presentation/interfaces/IUserModel"
+import { badRequest, serverError } from '../../../../presentation/helpers/httpError'
+import { IUserModel } from "../../../../presentation/interfaces/IUserModel"
 
 
 const makeTokenGenerator = () => {

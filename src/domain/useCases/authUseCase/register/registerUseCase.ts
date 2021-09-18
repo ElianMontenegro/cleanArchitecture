@@ -1,7 +1,7 @@
-import { IRegisterUseCase, IRegisterUserDTO } from "../../../presentation/interfaces/IRegisterUseCase";
-import { IUserRepository } from "../../../infra/repositories/IUserRepository";
-import { badRequest, serverError } from '../../../presentation/helpers/httpError'
-import { IUserModel, IEncrypter, IEmailValidator, IComparePassword, IJwt } from '../../../presentation/interfaces'
+import { IRegisterUseCase, IRegisterUserDTO } from "./IRegisterUseCase";
+import { IUserRepository } from "../../../../infra/repositories/IUserRepository";
+import { badRequest, serverError } from '../../../../presentation/helpers/httpError'
+import { IUserModel, IEncrypter, IEmailValidator, IComparePassword, IJwt } from '../../../../presentation/interfaces'
 export class RegisterUseCase implements IRegisterUseCase {
     constructor(
         private readonly emailValidator : IEmailValidator,

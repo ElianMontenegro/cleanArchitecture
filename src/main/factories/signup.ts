@@ -1,5 +1,5 @@
 import { JsonWebTokenError } from "jsonwebtoken"
-import { RegisterUseCase } from "../../domain/useCases/authUseCase/registerUseCase"
+import { RegisterUseCase } from "../../domain/useCases/authUseCase/register/registerUseCase"
 import { userModel } from "../../infra/model/userSchema"
 import { MongoUserRepository } from "../../infra/repositories/mongoUserRepository"
 import { RegisterUserController } from "../../presentation/controllers/register/registerUserController"
