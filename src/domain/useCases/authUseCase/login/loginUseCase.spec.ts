@@ -1,6 +1,20 @@
 import { badRequest } from "../../../../presentation/helpers/httpError";
 import { LoginUseCases } from './loginUseCase'
 
+const makeSut = () => {
+    const user = {
+        email : "any_email",
+        password : "any_passworf"
+    }
+    const sut = new LoginUseCases()
+    return {
+        user,
+        sut
+    }
+}
+
+
+
 describe('LoginUseCase', () => {
     test("should return badRequest error if email if not provided",async () => {
         const sut = new LoginUseCases();
