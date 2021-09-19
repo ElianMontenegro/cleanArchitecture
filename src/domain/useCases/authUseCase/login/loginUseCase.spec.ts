@@ -3,7 +3,7 @@ import { IUserModel } from '../../../../infra/model/IUserModel';
 import { badRequest, notFound, Unauthorized } from "../../../../presentation/helpers/httpError";
 import { IDcryptography } from '../../../../presentation/interfaces';
 import { LoginUseCases } from './loginUseCase'
-
+import { makeTokenGenerator } from '../register/registerUseCase.spec'
 
 const makeEncripter = () => {
     class DcryptSpy implements IDcryptography {
@@ -45,18 +45,20 @@ const makeSut = () => {
         email : "any_email",
         password : "any_password"
     }
+    const tokenGeneratorSpy = makeTokenGenerator()
     const dcryptSpy = makeEncripter()
     let throwError : any
     const mongoUserRepositorySpy = makeUserRepository()
     const emailValidatorSpy = makeEmailValidator()
-    const sut = new LoginUseCases(emailValidatorSpy, mongoUserRepositorySpy, dcryptSpy)
+    const sut = new LoginUseCases(emailValidatorSpy, mongoUserRepositorySpy, dcryptSpy, tokenGeneratorSpy)
     return {
         user,
         sut,
         emailValidatorSpy,
         mongoUserRepositorySpy,
         throwError,
-        dcryptSpy
+        dcryptSpy,
+        tokenGeneratorSpy
     }
 }
 
@@ -120,4 +122,12 @@ describe('LoginUseCase', () => {
         expect(throwError).toEqual(Unauthorized())
     })
 
+    test("should call TokenGenerator call with correct userId", async () => {
+        const { sut, tokenGeneratorSpy, user, mongoUserRepositorySpy, dcryptSpy }= makeSut()
+        mongoUserRepositorySpy.user = user
+        dcryptSpy.match = true
+        await sut.login(user);
+        expect(tokenGeneratorSpy.Token.userId).toBe(mongoUserRepositorySpy.user._id)
+        expect(tokenGeneratorSpy.Token.email).toBe(mongoUserRepositorySpy.user.email)
+    })
 })

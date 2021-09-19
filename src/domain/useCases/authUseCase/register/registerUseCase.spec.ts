@@ -6,7 +6,7 @@ import { ISave, ILoadUserByEmail } from "../../../../infra/interfacesRepositorie
 import { ICryptography } from "../../../../presentation/interfaces"
 
 
-const makeTokenGenerator = () => {
+export const makeTokenGenerator = () => {
     class TokenGeneratorSpy{
         userId : any
         Token: any
