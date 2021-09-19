@@ -7,7 +7,7 @@ import { makeTokenGenerator } from '../register/registerUseCase.spec'
 
 const makeEncripter = () => {
     class DcryptSpy implements IDcryptography {
-        match : any
+        match = true
         async dencrypt(value: string, valueHash: string): Promise<Boolean> {
             return this.match
         }
@@ -50,7 +50,7 @@ const makeSut = () => {
     let throwError : any
     const mongoUserRepositorySpy = makeUserRepository()
     const emailValidatorSpy = makeEmailValidator()
-    const sut = new LoginUseCases(emailValidatorSpy, mongoUserRepositorySpy, dcryptSpy, tokenGeneratorSpy)
+    const sut = new LoginUseCases(emailValidatorSpy, mongoUserRepositorySpy, dcryptSpy, tokenGeneratorSpy, tokenGeneratorSpy)
     return {
         user,
         sut,
@@ -61,8 +61,6 @@ const makeSut = () => {
         tokenGeneratorSpy
     }
 }
-
-
 
 describe('LoginUseCase', () => {
     test("should return badRequest error if email if not provided", async () => {
@@ -100,7 +98,7 @@ describe('LoginUseCase', () => {
 
 
     test("should return error 404 if user is not found ", async () => {
-        let { sut, user , mongoUserRepositorySpy, emailValidatorSpy, throwError} = makeSut();
+        let { sut, user , mongoUserRepositorySpy, throwError} = makeSut();
         mongoUserRepositorySpy.user = null
         try {
             await sut.login(user)
@@ -111,7 +109,7 @@ describe('LoginUseCase', () => {
     })
 
     test("should  return 401 error if password dont match", async () => {
-        let { sut, user , dcryptSpy , emailValidatorSpy, mongoUserRepositorySpy, throwError} = makeSut()
+        let { sut, user , dcryptSpy , mongoUserRepositorySpy, throwError} = makeSut()
         mongoUserRepositorySpy.user = user
         dcryptSpy.match = false
         try {
@@ -122,10 +120,9 @@ describe('LoginUseCase', () => {
         expect(throwError).toEqual(Unauthorized())
     })
 
-    test("should call TokenGenerator call with correct userId", async () => {
-        const { sut, tokenGeneratorSpy, user, mongoUserRepositorySpy, dcryptSpy }= makeSut()
+    test("should call TokenGenerator call with correct params", async () => {
+        const { sut, tokenGeneratorSpy, user, mongoUserRepositorySpy }= makeSut()
         mongoUserRepositorySpy.user = user
-        dcryptSpy.match = true
         await sut.login(user);
         expect(tokenGeneratorSpy.Token.userId).toBe(mongoUserRepositorySpy.user._id)
         expect(tokenGeneratorSpy.Token.email).toBe(mongoUserRepositorySpy.user.email)

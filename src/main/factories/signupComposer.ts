@@ -9,10 +9,13 @@ import { TokenGenerator } from "../../utils/tokenGenerator"
 
 
 export const makeSignUpController = (): RegisterUserController =>{
-    const secret = 'secreto'
-    const expiresIn = 3000
+    const secretAccessToken = 'secreto_accessToken'
+    const secretRefreshToken = 'secreto_accessToken'
+    const expiresInAccess = 3000
+    const expiresInRefresh = 10000
     const salt = 10
-    const jwt = new TokenGenerator(secret, expiresIn)
+    const JWTAccess = new TokenGenerator(secretAccessToken, expiresInAccess)
+    const JWTRefresh = new TokenGenerator(secretRefreshToken, expiresInRefresh)
     const encrypter = new Bcrypt(salt)
     const userRepository = new MongoUserRepository(userModel)
     const comparePassword = new ComparePassword()
@@ -24,7 +27,8 @@ export const makeSignUpController = (): RegisterUserController =>{
         userRepository,
         userRepository,
         encrypter,
-        jwt
+        JWTAccess,
+        JWTRefresh
     )
     const registerUserController = new RegisterUserController(registerUseCase)
     return registerUserController

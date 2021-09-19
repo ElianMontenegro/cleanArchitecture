@@ -3,14 +3,14 @@ import { RegisterUseCase } from './registerUseCase'
 import { badRequest, serverError } from '../../../../presentation/helpers/httpError'
 import { IUserModel } from "../../../../infra/model/IUserModel"
 import { ISave, ILoadUserByEmail } from "../../../../infra/interfacesRepositories"
-import { ICryptography } from "../../../../presentation/interfaces"
+import { IAccessToken, ICryptography, IRefreshToken } from "../../../../presentation/interfaces"
 
 
 export const makeTokenGenerator = () => {
-    class TokenGeneratorSpy{
+    class TokenGeneratorSpy implements IRefreshToken, IAccessToken{
         userId : any
         Token: any
-        public token(userId: string, email:string): string{
+        public token(userId: string, email?:string): string{
             this.userId = userId
             return this.Token
         }
@@ -104,6 +104,7 @@ const makeSut = () => {
         userRepository,
         userRepository,
         encrypterSpy,
+        tokenGeneratorSpy,
         tokenGeneratorSpy
     )
     return {

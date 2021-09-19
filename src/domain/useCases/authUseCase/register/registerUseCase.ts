@@ -1,7 +1,7 @@
 import { IRegisterUseCase, IRegisterUserDTO } from "./IRegisterUseCase";
 import { IUserSave } from '../../../../infra/interfacesRepositories'
 import { badRequest, serverError } from '../../../../presentation/helpers/httpError'
-import { ICryptography, IEmailValidator, IComparePassword, IJwt } from '../../../../presentation/interfaces'
+import { ICryptography, IEmailValidator, IComparePassword, IAccessToken, IRefreshToken } from '../../../../presentation/interfaces'
 import { ILoadUserByEmail, ISave } from '../../../../infra/interfacesRepositories/index'
 
 export class RegisterUseCase implements IRegisterUseCase {
@@ -11,7 +11,8 @@ export class RegisterUseCase implements IRegisterUseCase {
         private readonly LoadUserByEmail : ILoadUserByEmail,
         private readonly Save : ISave,
         private readonly encrypter : ICryptography,
-        private readonly jwt: IJwt
+        private readonly accessToken: IAccessToken,
+        private readonly refreshToken: IRefreshToken
     ){}
     async register (data : IRegisterUserDTO) {
         for (const [key, value] of Object.entries(data)) {
@@ -38,8 +39,8 @@ export class RegisterUseCase implements IRegisterUseCase {
         try {
             const userNew = await this.Save.save(user)
             return {
-                accessToken: this.jwt.token(userNew._id!),
-                refreshToken: this.jwt.token(userNew._id!, userNew.email),
+                accessToken: this.accessToken.token(userNew._id!),
+                refreshToken: this.refreshToken.token(userNew._id!, userNew.email),
             }
         } catch (error: any) {
             throw serverError(error);

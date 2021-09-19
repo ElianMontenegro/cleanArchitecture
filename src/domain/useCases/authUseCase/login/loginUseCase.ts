@@ -1,6 +1,6 @@
 import { ILoadUserByEmail } from '../../../../infra/interfacesRepositories'
 import { badRequest, notFound, serverError, Unauthorized } from "../../../../presentation/helpers/httpError";
-import { IEmailValidator, IDcryptography, IJwt } from "../../../../presentation/interfaces";
+import { IEmailValidator, IDcryptography, IAccessToken, IRefreshToken } from "../../../../presentation/interfaces";
 import { ILoginUseCase, ILoginUserDTO } from "./ILoginUseCase";
 
 
@@ -9,7 +9,8 @@ export class LoginUseCases implements ILoginUseCase{
         private readonly emailValidator : IEmailValidator,
         private readonly LoadUserByEmail : ILoadUserByEmail,
         private readonly dcryptography : IDcryptography,
-        private readonly jwt: IJwt
+        private readonly accessToken: IAccessToken,
+        private readonly refreshToken: IRefreshToken
     ){}
     async login(data: ILoginUserDTO): Promise<any>{
         for (const [key, value] of Object.entries(data)) {
@@ -30,8 +31,8 @@ export class LoginUseCases implements ILoginUseCase{
             throw Unauthorized()
         }
         try {
-            const accessToken = this.jwt.token(user._id!)
-            const refreshToken = this.jwt.token(user._id!, user.email)
+            const accessToken = this.accessToken.token(user._id!)
+            const refreshToken = this.refreshToken.token(user._id!, user.email)
         } catch (error : any) {
             throw serverError(error)
         }
