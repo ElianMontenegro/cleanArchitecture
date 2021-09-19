@@ -1,14 +1,14 @@
 import { ILoadUserByEmail } from '../../../../infra/interfacesRepositories'
-import { badRequest, notFound } from "../../../../presentation/helpers/httpError";
-import { IEmailValidator } from "../../../../presentation/interfaces";
+import { badRequest, notFound, Unauthorized } from "../../../../presentation/helpers/httpError";
+import { IEmailValidator, IDcryptography } from "../../../../presentation/interfaces";
 import { ILoginUseCase, ILoginUserDTO } from "./ILoginUseCase";
 
 
 export class LoginUseCases implements ILoginUseCase{
     constructor(
         private readonly emailValidator : IEmailValidator,
-        private LoadUserByEmail : ILoadUserByEmail
-
+        private readonly LoadUserByEmail : ILoadUserByEmail,
+        private readonly dcryptography : IDcryptography
     ){}
     async login(data: ILoginUserDTO): Promise<any>{
         for (const [key, value] of Object.entries(data)) {
@@ -23,6 +23,10 @@ export class LoginUseCases implements ILoginUseCase{
         const user = await this.LoadUserByEmail.loadUserByEmail(data.email)
         if(!user){
             throw notFound("user not found")
+        }
+        
+        if(!await this.dcryptography.dencrypt(data.password, user.password)){
+            throw Unauthorized()
         }
     }
 }

@@ -1,23 +1,26 @@
 import { ILoadUserByEmail } from '../../../../infra/interfacesRepositories'
 import { IUserModel } from '../../../../infra/model/IUserModel';
-import { badRequest, notFound } from "../../../../presentation/helpers/httpError";
+import { badRequest, notFound, Unauthorized } from "../../../../presentation/helpers/httpError";
 import { IDcryptography } from '../../../../presentation/interfaces';
 import { LoginUseCases } from './loginUseCase'
 
-let throwError : any
 
 const makeEncripter = () => {
-    class Encripter implements IDcryptography {
+    class DcryptSpy implements IDcryptography {
+        match : any
         async dencrypt(value: string, valueHash: string): Promise<Boolean> {
-            throw new Error('Method not implemented.');
+            return this.match
         }
     }
+    const dcrypt = new DcryptSpy()
+    return dcrypt
 }
 
 const makeUserRepository = () => {
+
     class MongoUserRepositorySpy implements ILoadUserByEmail {
         user : any
-        async loadUserByEmail(email: string): Promise<IUserModel> {
+        async loadUserByEmail(email: string): Promise<Pick<IUserModel, "_id" | "email" | "password">> {
             return this.user
         }
     }
@@ -27,7 +30,7 @@ const makeUserRepository = () => {
   
 const makeEmailValidator = () => {
     class EmailValidatorSpy{
-        valid : any
+        valid = true
         isValid(email: string): Boolean{
             return this.valid
         }
@@ -38,17 +41,22 @@ const makeEmailValidator = () => {
 
 const makeSut = () => {
     const user = {
+        _id : "any_id",
         email : "any_email",
         password : "any_password"
     }
+    const dcryptSpy = makeEncripter()
+    let throwError : any
     const mongoUserRepositorySpy = makeUserRepository()
     const emailValidatorSpy = makeEmailValidator()
-    const sut = new LoginUseCases(emailValidatorSpy, mongoUserRepositorySpy)
+    const sut = new LoginUseCases(emailValidatorSpy, mongoUserRepositorySpy, dcryptSpy)
     return {
         user,
         sut,
         emailValidatorSpy,
-        mongoUserRepositorySpy
+        mongoUserRepositorySpy,
+        throwError,
+        dcryptSpy
     }
 }
 
@@ -56,7 +64,7 @@ const makeSut = () => {
 
 describe('LoginUseCase', () => {
     test("should return badRequest error if email if not provided", async () => {
-        const { sut, user} = makeSut();
+        let { sut, user, throwError} = makeSut();
         user.email = ""
         try {
             await sut.login(user)
@@ -67,7 +75,7 @@ describe('LoginUseCase', () => {
     })
 
     test("should return badRequest error if email if not provided", async () => {
-        const { sut, user} = makeSut();
+        let { sut, user, throwError} = makeSut();
         user.password = ""
         try {
             await sut.login(user)
@@ -78,7 +86,7 @@ describe('LoginUseCase', () => {
     })
 
     test("should return badRequest error if email is invalid", async () => {
-        const { sut, user, emailValidatorSpy} = makeSut();
+        let { sut, user, emailValidatorSpy, throwError } = makeSut();
         emailValidatorSpy.valid = false
         try {
             await sut.login(user)
@@ -90,8 +98,7 @@ describe('LoginUseCase', () => {
 
 
     test("should return error 404 if user is not found ", async () => {
-        const { sut, user , mongoUserRepositorySpy, emailValidatorSpy} = makeSut();
-        emailValidatorSpy.valid = true
+        let { sut, user , mongoUserRepositorySpy, emailValidatorSpy, throwError} = makeSut();
         mongoUserRepositorySpy.user = null
         try {
             await sut.login(user)
@@ -102,12 +109,15 @@ describe('LoginUseCase', () => {
     })
 
     test("should  return 401 error if password dont match", async () => {
-        const { sut, user } = makeSut()
+        let { sut, user , dcryptSpy , emailValidatorSpy, mongoUserRepositorySpy, throwError} = makeSut()
+        mongoUserRepositorySpy.user = user
+        dcryptSpy.match = false
         try {
             await sut.login(user)
         } catch (error) {
             throwError = error
         }
+        expect(throwError).toEqual(Unauthorized())
     })
 
 })

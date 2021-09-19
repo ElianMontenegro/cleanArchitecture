@@ -17,7 +17,7 @@ const makeSut = () => {
     return new Dcrypt()
   }
 
-describe('Encrypter', () => {
+describe('Dcrypt', () => {
     test('Should return true if bcrypt returns true', async () => {
         const sut = makeSut()
         bcrypt_result = true
