@@ -1,13 +1,12 @@
-import { IUserModel } from "../../presentation/interfaces";
-import { userModel } from "../model/userSchema";
-import { IUserRepository } from "./IUserRepository";
+import { IUserModel } from "../model/IUserModel";
+import { ILoadUserByEmail, ISave } from "../interfacesRepositories"
 import { Model } from "mongoose";
-
-export class MongoUserRepository implements IUserRepository {
+// import { IMongoRepository } from "../interfacesRepositories/IMongoRepository"
+export class MongoUserRepository implements ILoadUserByEmail, ISave {
 
     constructor(private readonly entity : typeof Model){}
     async loadUserByEmail(email: string): Promise<IUserModel> {
-        const user : IUserModel = await this.entity.findOne({email}, {'username' : 0 , 'updatedAt' : 0, 'createdAt' : 0, 'password' : 0, 'role' : 0})
+        const user : IUserModel = await this.entity.findOne({email}, {'username' : 0 , 'updatedAt' : 0, 'createdAt' : 0,'role' : 0})
         return user
     }
     async save(user: IUserModel): Promise<IUserModel> {

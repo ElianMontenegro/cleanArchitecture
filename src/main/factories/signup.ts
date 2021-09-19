@@ -1,4 +1,3 @@
-import { JsonWebTokenError } from "jsonwebtoken"
 import { RegisterUseCase } from "../../domain/useCases/authUseCase/register/registerUseCase"
 import { userModel } from "../../infra/model/userSchema"
 import { MongoUserRepository } from "../../infra/repositories/mongoUserRepository"
@@ -21,6 +20,7 @@ export const makeSignUpController = (): RegisterUserController =>{
     const registerUseCase = new RegisterUseCase(
         emailValidator, 
         comparePassword,
+        userRepository,
         userRepository,
         encrypter,
         jwt

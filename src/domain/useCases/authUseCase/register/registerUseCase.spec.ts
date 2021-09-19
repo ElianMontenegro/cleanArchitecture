@@ -1,7 +1,8 @@
 import { IRegisterUserDTO } from "./IRegisterUseCase"
 import { RegisterUseCase } from './registerUseCase'
 import { badRequest, serverError } from '../../../../presentation/helpers/httpError'
-import { IUserModel } from "../../../../presentation/interfaces/IUserModel"
+import { IUserModel } from "../../../../infra/model/IUserModel"
+import { ISave, ILoadUserByEmail } from "../../../../infra/interfacesRepositories"
 
 
 const makeTokenGenerator = () => {
@@ -44,7 +45,7 @@ const makeEncrypter = () => {
 
 const makeUserRepository = () => {
     
-    class UserRepositorySpy{
+    class UserRepositorySpy implements ILoadUserByEmail, ISave{
        
         res : any
         username: any
@@ -110,6 +111,7 @@ const makeSut = () => {
     const sut = new RegisterUseCase(
         emailValidatorSpy, 
         comparePasswordSpy, 
+        userRepository,
         userRepository,
         encrypterSpy,
         tokenGeneratorSpy

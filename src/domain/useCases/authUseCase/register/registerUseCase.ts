@@ -1,12 +1,15 @@
 import { IRegisterUseCase, IRegisterUserDTO } from "./IRegisterUseCase";
-import { IUserRepository } from "../../../../infra/repositories/IUserRepository";
+import { IUserSave } from '../../../../infra/interfacesRepositories'
 import { badRequest, serverError } from '../../../../presentation/helpers/httpError'
-import { IUserModel, IEncrypter, IEmailValidator, IComparePassword, IJwt } from '../../../../presentation/interfaces'
+import { IEncrypter, IEmailValidator, IComparePassword, IJwt } from '../../../../presentation/interfaces'
+// import { IMongoRepository } from "../../../../infra/interfacesRepositories/IMongoRepository";
+import { ILoadUserByEmail, ISave } from '../../../../infra/interfacesRepositories/index'
 export class RegisterUseCase implements IRegisterUseCase {
     constructor(
         private readonly emailValidator : IEmailValidator,
         private readonly comparePassword : IComparePassword,
-        private readonly userRepository : IUserRepository,
+        private readonly LoadUserByEmail : ILoadUserByEmail,
+        private readonly Save : ISave,
         private readonly encrypter : IEncrypter,
         private readonly jwt: IJwt
     ){}
@@ -22,18 +25,18 @@ export class RegisterUseCase implements IRegisterUseCase {
         if(!this.comparePassword.isMatch(data.password, data.repeatPassword)){
             throw badRequest("passwords not match")
         }
-        if(await this.userRepository.loadUserByEmail(data.email)){
+        if(await this.LoadUserByEmail.loadUserByEmail(data.email)){
             throw badRequest("user already exist")
         }
         const passwordHash = await this.encrypter.hash(data.password, 10)
-        const user : IUserModel = {
+        const user : IUserSave = {
             username : data.username,
             email : data.email, 
             password : passwordHash
         }
        
         try {
-            const userNew = await this.userRepository.save(user)
+            const userNew = await this.Save.save(user)
             return {
                 accessToken: this.jwt.token(userNew._id!),
                 refreshToken: this.jwt.token(userNew._id!, userNew.email),
