@@ -1,5 +1,8 @@
 
-export interface IEncrypter {
-    hash(value: string, salt: number): Promise<string>
-    compare(value: string, valueHash: string): Promise<Boolean>
+export interface ICryptography {
+    encrypt: (value: string) => Promise<string>
+  }
+  
+export interface IDcryptography {
+    dencrypt: (value: string, compary: string) => Promise<Boolean>
 }

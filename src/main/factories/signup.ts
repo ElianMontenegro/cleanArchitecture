@@ -4,15 +4,16 @@ import { MongoUserRepository } from "../../infra/repositories/mongoUserRepositor
 import { RegisterUserController } from "../../presentation/controllers/register/registerUserController"
 import { ComparePassword } from "../../utils/comparePassword"
 import { EmailValidator } from "../../utils/emailValidator"
-import { Encrypter } from "../../utils/Encrypter"
+import { Bcrypt } from "../../utils/Encrypter"
 import { TokenGenerator } from "../../utils/tokenGenerator"
 
 
 export const makeSignUpController = (): RegisterUserController =>{
     const secret = 'secreto'
     const expiresIn = 3000
+    const salt = 10
     const jwt = new TokenGenerator(secret, expiresIn)
-    const encrypter = new Encrypter()
+    const encrypter = new Bcrypt(salt)
     const userRepository = new MongoUserRepository(userModel)
     const comparePassword = new ComparePassword()
     const emailValidator = new EmailValidator();

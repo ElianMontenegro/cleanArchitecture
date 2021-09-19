@@ -11,29 +11,29 @@ jest.mock('bcrypt', () => ({
 }))
 
 const bcrypt = require('bcrypt')
-import { Encrypter } from './Encrypter'
+import { Dcrypt } from './Encrypter'
 
 const makeSut = () => {
-    return new Encrypter()
+    return new Dcrypt()
   }
 
 describe('Encrypter', () => {
     test('Should return true if bcrypt returns true', async () => {
         const sut = makeSut()
         bcrypt_result = true
-        const isValid = await sut.compare('any_value', 'hashed_value')
+        const isValid = await sut.dencrypt('any_value', 'hashed_value')
         expect(isValid).toBe(true)
     })
     test('Should return false if bcrypt returns false', async () => {
         const sut = makeSut()
         bcrypt_result = false
-        const isValid = await sut.compare('any_value', 'hashed_value')
+        const isValid = await sut.dencrypt('any_value', 'hashed_value')
         expect(isValid).toBe(false)
     })
     
     test('Should call bcrypt with correct values', async () => {
         const sut = makeSut()
-        await sut.compare('any_value', 'hashed_value')
+        await sut.dencrypt('any_value', 'hashed_value')
         expect(bcrypt_value).toBe('any_value')
         expect(bcrypt_hash).toBe('hashed_value')
       })

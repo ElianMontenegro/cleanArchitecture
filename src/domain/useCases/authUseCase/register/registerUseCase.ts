@@ -1,16 +1,16 @@
 import { IRegisterUseCase, IRegisterUserDTO } from "./IRegisterUseCase";
 import { IUserSave } from '../../../../infra/interfacesRepositories'
 import { badRequest, serverError } from '../../../../presentation/helpers/httpError'
-import { IEncrypter, IEmailValidator, IComparePassword, IJwt } from '../../../../presentation/interfaces'
-// import { IMongoRepository } from "../../../../infra/interfacesRepositories/IMongoRepository";
+import { ICryptography, IEmailValidator, IComparePassword, IJwt } from '../../../../presentation/interfaces'
 import { ILoadUserByEmail, ISave } from '../../../../infra/interfacesRepositories/index'
+
 export class RegisterUseCase implements IRegisterUseCase {
     constructor(
         private readonly emailValidator : IEmailValidator,
         private readonly comparePassword : IComparePassword,
         private readonly LoadUserByEmail : ILoadUserByEmail,
         private readonly Save : ISave,
-        private readonly encrypter : IEncrypter,
+        private readonly encrypter : ICryptography,
         private readonly jwt: IJwt
     ){}
     async register (data : IRegisterUserDTO) {
@@ -28,7 +28,7 @@ export class RegisterUseCase implements IRegisterUseCase {
         if(await this.LoadUserByEmail.loadUserByEmail(data.email)){
             throw badRequest("user already exist")
         }
-        const passwordHash = await this.encrypter.hash(data.password, 10)
+        const passwordHash = await this.encrypter.encrypt(data.password)
         const user : IUserSave = {
             username : data.username,
             email : data.email, 

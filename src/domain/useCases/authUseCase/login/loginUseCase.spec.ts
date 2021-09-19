@@ -1,9 +1,19 @@
 import { ILoadUserByEmail } from '../../../../infra/interfacesRepositories'
 import { IUserModel } from '../../../../infra/model/IUserModel';
 import { badRequest, notFound } from "../../../../presentation/helpers/httpError";
+import { IDcryptography } from '../../../../presentation/interfaces';
 import { LoginUseCases } from './loginUseCase'
 
 let throwError : any
+
+const makeEncripter = () => {
+    class Encripter implements IDcryptography {
+        async dencrypt(value: string, valueHash: string): Promise<Boolean> {
+            throw new Error('Method not implemented.');
+        }
+    }
+}
+
 const makeUserRepository = () => {
     class MongoUserRepositorySpy implements ILoadUserByEmail {
         user : any
@@ -91,6 +101,13 @@ describe('LoginUseCase', () => {
         expect(throwError).toEqual(notFound("user not found"))
     })
 
-    
+    test("should  return 401 error if password dont match", async () => {
+        const { sut, user } = makeSut()
+        try {
+            await sut.login(user)
+        } catch (error) {
+            throwError = error
+        }
+    })
 
 })

@@ -1,5 +1,5 @@
 import { badRequest, serverError, success } from '../../helpers/httpError';
-import { IController, IHttpRequest, IHttpResponse, IRegisterUseCase, IRegisterUserDTO } from './registerProtocols'
+import { IController, IHttpRequest, IHttpResponse, IRegisterUseCase } from './registerProtocols'
 
 export class RegisterUserController implements IController {
     constructor(private readonly registerUseCase : IRegisterUseCase){

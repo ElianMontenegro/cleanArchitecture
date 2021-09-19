@@ -3,11 +3,11 @@ import { RegisterUseCase } from './registerUseCase'
 import { badRequest, serverError } from '../../../../presentation/helpers/httpError'
 import { IUserModel } from "../../../../infra/model/IUserModel"
 import { ISave, ILoadUserByEmail } from "../../../../infra/interfacesRepositories"
+import { ICryptography } from "../../../../presentation/interfaces"
 
 
 const makeTokenGenerator = () => {
     class TokenGeneratorSpy{
-      
         userId : any
         Token: any
         public token(userId: string, email:string): string{
@@ -24,29 +24,20 @@ const makeTokenGenerator = () => {
 }
 
 const makeEncrypter = () => {
-    class EncrypterSpy{
+    class EncrypterSpy implements ICryptography{
         password : any
-        salt : any
         hashedPassword : any
         isValid : any
-        public hash(value: string, salt: number){
+        public async encrypt(value: string){
             this.password = value
-            this.salt = salt
             return this.password
-        }
-        public compare(value: string, hashValue: string){
-            this.password = value
-            this.hashedPassword = hashValue
-            return this.isValid
         }
     }
     return new EncrypterSpy()
 }
 
 const makeUserRepository = () => {
-    
     class UserRepositorySpy implements ILoadUserByEmail, ISave{
-       
         res : any
         username: any
         user: any
@@ -62,8 +53,7 @@ const makeUserRepository = () => {
     const userRepositorySpy = new UserRepositorySpy()
     userRepositorySpy.user = {
         id: 'any_id',
-        email: 'any_email'
-       
+        email: 'any_email'   
     }
     return userRepositorySpy
 
@@ -210,11 +200,9 @@ describe('RegisterUseCase', () => {
     test('should call Encrypter hash() with correct values',async () => {
         const { sut, encrypterSpy, userRepository, user } = makeSut()
         const password = "any_password"
-        const salt = 10
         await sut.register(user)
         userRepository.res = null
         expect(encrypterSpy.password).toBe(password)
-        expect(encrypterSpy.salt).toBe(salt)
     }) 
 
     test('should call userRepository save() with correct values',async () => {
