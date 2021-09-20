@@ -10,8 +10,6 @@ export class TokenGenerator implements IAccessToken, IRefreshToken{
     }
     token(id : string, email? : string): string{
         const token = jwt.sign({id : id, email: email}, this.secret, { expiresIn: this.expiresIn });
-        console.log(token);
-        
         return token
     }
 }

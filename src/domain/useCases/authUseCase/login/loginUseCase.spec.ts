@@ -1,6 +1,6 @@
 import { ILoadUserByEmail } from '../../../../infra/interfacesRepositories'
 import { IUserModel } from '../../../../infra/model/IUserModel';
-import { badRequest, notFound, Unauthorized } from "../../../../presentation/helpers/httpError";
+import { badRequest, notFound, serverError, Unauthorized } from "../../../../presentation/helpers/httpError";
 import { IDcryptography } from '../../../../presentation/interfaces';
 import { LoginUseCases } from './loginUseCase'
 import { makeTokenGenerator } from '../register/registerUseCase.spec'
@@ -126,5 +126,15 @@ describe('LoginUseCase', () => {
         await sut.login(user);
         expect(tokenGeneratorSpy.Token.userId).toBe(mongoUserRepositorySpy.user._id)
         expect(tokenGeneratorSpy.Token.email).toBe(mongoUserRepositorySpy.user.email)
+    })
+
+    test('should return serverError if there are some problems with tokens params', async () => {
+        const { sut, user, tokenGeneratorSpy, mongoUserRepositorySpy } = makeSut()
+        mongoUserRepositorySpy.user = user
+        jest.spyOn(tokenGeneratorSpy, 'token').mockImplementationOnce(() => {
+            throw new Error()
+        })
+        const res = await sut.login(user)
+        expect(res).toEqual(serverError(new Error()))
     })
 })

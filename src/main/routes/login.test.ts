@@ -1,25 +1,32 @@
 import request from "supertest";
 import { mongooseHelper } from "../../infra/helpers/mongooseHelper";
+import { Bcrypt } from "../../utils/Encrypter";
 import app from "../config/app";
-
-describe('Route SingUp', () => {
+let userModel : any
+describe('Route login', () => {
     beforeAll(async () => {
         await mongooseHelper.connect("mongodb+srv://elianMontenegro:elianMontenegro@cluster0.ngt7y.mongodb.net/mockMongoose?retryWrites=true&w=majority")
+        userModel = await mongooseHelper.getCollection('users')
     });
 
-    // beforeEach(async () => {
-        
-    // }, 3000)
+    beforeEach(async () => {
+        await userModel.drop()
+    }, 3000)
 
     afterAll(async () => {
-        await  mongooseHelper.getCollection('users').drop()
+       
         await mongooseHelper.disconnect()
     });
     test('should return 200 when valid credentials are provided', async () => {
+        const bcript = new Bcrypt(10)
+        await userModel.insertOne({
+            email: 'valid_email@gmail.com',
+            password: await bcript.encrypt('hashed_password')
+          })
         await request(app)
-            .post("/api/singup")
+            .post("/api/login")
             .expect("Content-Type", /json/)
-            .send({username: "any_username", email : "elian@gmail.com" ,  password : "12345" , repeatPassword : "12345"})
+            .send({email : "valid_email@gmail.com" ,  password : "hashed_password" })
             .expect(200)
     })
     

@@ -43,7 +43,7 @@ export class RegisterUseCase implements IRegisterUseCase {
                 refreshToken: this.refreshToken.token(userNew._id!, userNew.email),
             }
         } catch (error: any) {
-            throw serverError(error);
+            return serverError(error);
         }
 
     }

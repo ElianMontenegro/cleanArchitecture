@@ -31,10 +31,12 @@ export class LoginUseCases implements ILoginUseCase{
             throw Unauthorized()
         }
         try {
-            const accessToken = this.accessToken.token(user._id!)
-            const refreshToken = this.refreshToken.token(user._id!, user.email)
+            return {
+                accessToken : this.accessToken.token(user._id!),
+                refreshToken : this.refreshToken.token(user._id!, user.email)
+            }
         } catch (error : any) {
-            throw serverError(error)
+            return serverError(error)
         }
     }
 }

@@ -249,12 +249,8 @@ describe('RegisterUseCase', () => {
         jest.spyOn(userRepository, 'save').mockImplementationOnce(() => {
             throw new Error()
         })
-        try {
-            await sut.register(user)
-        } catch (error) {
-            thrownError = error
-        }
-        expect(thrownError).toEqual(serverError(new Error()))
+        const res = await sut.register(user)
+        expect(res).toEqual(serverError(new Error()))
     })
     
 })
