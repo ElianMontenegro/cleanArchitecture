@@ -9,14 +9,15 @@ describe('Route login', () => {
         userModel = await mongooseHelper.getCollection('users')
     });
 
-    beforeEach(async () => {
-        await userModel.drop()
-    }, 3000)
+    // afterEach(async () => {
+        
+    // })
 
     afterAll(async () => {
-       
+        await userModel.deleteMany({})
         await mongooseHelper.disconnect()
-    });
+    },3000);
+    
     test('should return 200 when valid credentials are provided', async () => {
         const bcript = new Bcrypt(10)
         await userModel.insertOne({
