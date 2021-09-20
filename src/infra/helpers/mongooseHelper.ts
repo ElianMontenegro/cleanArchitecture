@@ -6,6 +6,7 @@ class MongooseHelper {
     public async connect(uri: string){
         await mongoose.connect(uri)
         this.client = mongoose.connection;
+        console.log("db connect");
     } 
 
     public async disconnect(){
