@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "ts-node src/main/config/server.ts",
     "test": "jest ",
     "test:unit": "npm test -- -c jest-unit-config.js --passWithNoTests",
     "test:int": "npm test -- -c jest-int-config.js --passWithNoTests  --silent",
