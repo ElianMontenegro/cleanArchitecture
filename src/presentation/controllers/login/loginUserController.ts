@@ -1,4 +1,4 @@
-import { badRequest, serverError, success, Unauthorized } from "../../helpers/httpError";
+import { badRequest, catchException, serverError, success, Unauthorized } from "../../helpers/httpError";
 import { IController, ILoginUserDTO, ILoginUseCase, IHttpRequest, IHttpResponse } from './loginProtocols'
 
 export class LoginUserController implements IController {
@@ -18,7 +18,7 @@ export class LoginUserController implements IController {
             }
             return success(tokens)
         } catch (error:any) {
-           return serverError(error)
+           return catchException(error)
         }
     }
 }

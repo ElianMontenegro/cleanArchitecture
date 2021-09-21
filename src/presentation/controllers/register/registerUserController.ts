@@ -1,4 +1,4 @@
-import { badRequest, serverError, success } from '../../helpers/httpError';
+import { badRequest, catchException, serverError, success } from '../../helpers/httpError';
 import { IController, IHttpRequest, IHttpResponse, IRegisterUseCase } from './registerProtocols'
 
 export class RegisterUserController implements IController {
@@ -17,7 +17,7 @@ export class RegisterUserController implements IController {
 
             return success(tokens)
         } catch (error : any) {
-            return serverError(error)
+            return catchException(error)
         }
     }
 }
